@@ -1,0 +1,29 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "type": "module",
+  "dependencies": {
+    "buffer-to-uint8array": "^1.1.0",
+    "cloudinary": "^1.41.3",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "ethers": "^5.7.2",
+    "express": "^4.18.1",
+    "frames.js": "^0.18.1",
+    "jose": "^6.0.10",
+    "jsonwebtoken": "^8.5.1",
+    "moment-timezone": "^0.5.45",
+    "mongoose": "^6.3.5",
+    "node": "^17.7.2",
+    "nodemon": "^2.0.22"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
