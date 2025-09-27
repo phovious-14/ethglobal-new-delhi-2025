@@ -14,7 +14,6 @@ import { env } from "@/src/env.mjs";
 import QueryProvider from "./queryProvider";
 import { WagmiProviderCustom } from "./wagmiProviderCustom";
 import { WalletLoginProvider } from "../context/WalletLoginContext";
-import mixpanel from "mixpanel-browser";
 
 // that runs after successful login.
 export const handleLogin = async (
@@ -43,10 +42,6 @@ export const handleLogin = async (
         privyId: user.id,
       });
       if (res) {
-        mixpanel.people.set({
-          $email: email,
-          $walletAddress: user?.wallet?.address || "",
-        });
         return true;
       }
     } else if (dbUser && dbUser.email !== email) {
@@ -65,7 +60,8 @@ export const handleLogin = async (
 const getSupportedChains = () => {
   const isTestnet = env.NEXT_PUBLIC_NETWORK === 'TESTNET';
   if (isTestnet) {
-    return [scrollSepolia, baseSepolia, sepolia];
+    // Prefer Ethereum Sepolia as the default testnet
+    return [sepolia, scrollSepolia, baseSepolia];
   }
   // For mainnet, support both Base and Scroll (Base first for neutral default)
   return [base, scroll];
@@ -74,7 +70,8 @@ const getSupportedChains = () => {
 const getDefaultChain = () => {
   const isTestnet = env.NEXT_PUBLIC_NETWORK === 'TESTNET';
   if (isTestnet) {
-    return scrollSepolia;
+    // Set default testnet to Ethereum Sepolia
+    return sepolia;
   }
   // For mainnet, return the first supported chain (no preference)
   const chains = getSupportedChains();

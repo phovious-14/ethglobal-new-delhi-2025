@@ -3,6 +3,7 @@ import { getTokenConfig } from "./tokenRegistry";
 
 // Token logo mapping
 const TOKEN_LOGOS: Record<string, string> = {
+    // Super tokens
     'PYUSD': '/img/pyusd.png',
     'PYUSDx': '/img/pyusdx.png',
 };

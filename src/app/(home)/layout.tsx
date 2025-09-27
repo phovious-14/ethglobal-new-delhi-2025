@@ -1,5 +1,6 @@
 import { Suspense } from "react"
 import Loading from "../loading";
+import Layout from "@/src/components/layout";
 
 export default function RootLayout({
   children,
@@ -8,7 +9,7 @@ export default function RootLayout({
 }) {
   return (
     <Suspense fallback={<Loading />}>
-      {children}
+      <Layout>{children}</Layout>
     </Suspense>
   );
 }

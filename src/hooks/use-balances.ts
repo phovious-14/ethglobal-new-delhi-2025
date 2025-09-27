@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useSigner } from '@/src/hooks/use-signer';
+import { useSigner } from './use-signer';
 import { useWallets, usePrivy } from '@privy-io/react-auth';
 import { Framework } from '@superfluid-finance/sdk-core';
 import { getTokenPairBySymbol, formatTokenAmount, getCurrentNetworkConfig } from '@/src/utils/tokenRegistry';

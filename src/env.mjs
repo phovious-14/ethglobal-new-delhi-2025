@@ -18,13 +18,14 @@ const client = z.object({
     NEXT_PUBLIC_BACKEND_BASE_URL: z.string().min(1),
     NEXT_PUBLIC_PRIVY_APP_ID: z.string().min(1),
     NEXT_PUBLIC_NETWORK: z.enum(["MAINNET", "TESTNET"]),
-    NEXT_PUBLIC_CHAIN_ID: z.string().min(1),
+    NEXT_PUBLIC_CHAIN_ID: z.string().optional(),
     // Legacy support - these will be deprecated in favor of centralized token registry
     NEXT_PUBLIC_SUPERTOKEN: z.string().optional(),
     NEXT_PUBLIC_TOKEN_SYMBOL: z.string().optional(),
-    NEXT_PUBLIC_DECIMALS: z.string().min(1),
+    NEXT_PUBLIC_DECIMALS: z.string().optional(),
     NEXT_PUBLIC_PINATA_JWT: z.string().min(1),
     NEXT_PUBLIC_PINATA_GATEWAY_TOKEN: z.string().min(1),
+    NEXT_PUBLIC_MIXPANEL_TOKEN: z.string().optional(),
 });
 
 /**

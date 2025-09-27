@@ -1,7 +1,7 @@
 import axios from "axios";
 import { env } from "@/src/env.mjs";
 
-const baseUrl = env.NEXT_PUBLIC_DRIPPAY_BACKEND_BASE_URL;
+const baseUrl = env.NEXT_PUBLIC_BACKEND_BASE_URL;
 
 export const getUserById = async (userId: string, accessToken: string) => {
   try {

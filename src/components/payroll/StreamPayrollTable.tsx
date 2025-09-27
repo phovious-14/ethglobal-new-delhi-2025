@@ -7,7 +7,7 @@ import { Badge } from '@/src/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/src/components/ui/tooltip';
 import { Dialog, DialogContent, DialogTrigger } from '@/src/components/ui/dialog';
 import { Download, ExternalLink, Copy, Waves, CheckCircle, Clock, RefreshCw, AlertCircle, Play, Pause, StopCircle, MoreVertical, Search, Filter, ArrowUpDown, Calendar, DollarSign, Activity, ArrowDown, ArrowUp, X, ChevronDown } from 'lucide-react';
-import { formatTokenAmount, getTokenConfig } from '@/src/utils/tokenRegistry';
+import { formatTokenAmount, getTokenConfig } from '@/src/utils/tokenConfig';
 import { getCurrencyLogo } from '@/src/utils/getCurrencyLogo';
 import { StreamRecord } from '@/src/hooks/use-records';
 import { StreamVisualizer } from '@/src/components/USDCStreamVisualizer';

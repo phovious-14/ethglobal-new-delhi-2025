@@ -26,16 +26,6 @@ import { parseTokenAmount, isTestnetChain } from '@/src/utils/tokenRegistry';
 import { useToken } from '@/src/app/context/TokenContext';
 import { env } from '@/src/env.mjs';
 import { useStream, useBufferAmount } from '@/src/hooks/use-stream';
-import {
-    trackStreamCreationStart,
-    trackStreamCreationSuccess,
-    trackStreamCreationFailed,
-    trackInstantPaymentStart,
-    trackInstantPaymentSuccess,
-    trackInstantPaymentFailed,
-} from '@/src/utils/analytics';
-import { initMixpanel } from '@/src/lib/mixpanelClient';
-import { identifyUser } from '@/src/utils/analytics/IdentifyMixpanelUser';
 
 interface PayrollFormData {
     payrollName: string;
@@ -243,22 +233,6 @@ const CreatePayrollPage = () => {
 
     // Separate handleSubmit functions - Remove useCallback to prevent re-creation issues
     const handleSubmitInstant = async () => {
-        initMixpanel();
-
-        identifyUser(privyUser?.id || "", privyUser?.email?.address || "", privyUser?.wallet?.address || "");
-        // Track instant payment start
-        if (privyUser?.wallet?.address) {
-            trackInstantPaymentStart({
-                distinct_id: privyUser?.id || "",
-                walletAddress: privyUser.wallet.address,
-                recipientAddress: formData.walletAddress,
-                amount: formData.amount,
-                payrollName: formData.payrollName,
-                network: isTestnetChain(activeChain.chainId) ? 'testnet' : 'mainnet',
-                tokenSymbol: tokenConfig.superToken.symbol,
-                isTestnet: isTestnetChain(activeChain.chainId)
-            });
-        }
 
         try {
             let documentUrl = '';
@@ -274,20 +248,6 @@ const CreatePayrollPage = () => {
                         invoiceNumber = currentInvoiceNumber || generateInvoiceNumber();
                     }
                 } catch (uploadError) {
-                    // Track instant payment failure
-                    if (privyUser?.wallet?.address) {
-                        trackInstantPaymentFailed({
-                            distinct_id: privyUser?.id || "",
-                            walletAddress: privyUser.wallet.address,
-                            recipientAddress: formData.walletAddress,
-                            amount: formData.amount,
-                            payrollName: formData.payrollName,
-                            network: isTestnetChain(activeChain.chainId) ? 'testnet' : 'mainnet',
-                            tokenSymbol: tokenConfig.superToken.symbol,
-                            isTestnet: isTestnetChain(activeChain.chainId),
-                            error: "Failed to upload invoice to IPFS"
-                        });
-                    }
                     console.error("Failed to upload invoice to IPFS:", uploadError);
                     setInvoices([]);
                     setPendingInvoice(null);
@@ -346,21 +306,6 @@ const CreatePayrollPage = () => {
             });
 
             if (!txData?.transactionHash) {
-
-                // Track instant payment failure
-                if (privyUser?.wallet?.address) {
-                    trackInstantPaymentFailed({
-                        distinct_id: privyUser?.id || "",
-                        walletAddress: privyUser.wallet.address,
-                        recipientAddress: formData.walletAddress,
-                        amount: formData.amount,
-                        payrollName: formData.payrollName,
-                        network: isTestnetChain(activeChain.chainId) ? 'testnet' : 'mainnet',
-                        tokenSymbol: tokenConfig.superToken.symbol,
-                        isTestnet: isTestnetChain(activeChain.chainId),
-                        error: "Failed to create Superfluid instant"
-                    });
-                }
                 setFormData({
                     sendWalletAddress: '',
                     payrollName: `Payroll ${new Date().toLocaleDateString()}`,
@@ -413,20 +358,6 @@ const CreatePayrollPage = () => {
             });
 
             if (!data) {
-                // Track instant payment failure
-                if (privyUser?.wallet?.address) {
-                    trackInstantPaymentFailed({
-                        distinct_id: privyUser?.id || "",
-                        walletAddress: privyUser.wallet.address,
-                        recipientAddress: formData.walletAddress,
-                        amount: formData.amount,
-                        payrollName: formData.payrollName,
-                        network: isTestnetChain(activeChain.chainId) ? 'testnet' : 'mainnet',
-                        tokenSymbol: tokenConfig.superToken.symbol,
-                        isTestnet: isTestnetChain(activeChain.chainId),
-                        error: "Storing instant payment record in database failed"
-                    });
-                }
 
                 setFormData({
                     sendWalletAddress: '',
@@ -449,22 +380,6 @@ const CreatePayrollPage = () => {
                     variant: "destructive"
                 });
                 return;
-            }
-
-            // Track instant payment success
-            if (privyUser?.wallet?.address) {
-                trackInstantPaymentSuccess({
-                    distinct_id: privyUser?.id || "",
-                    walletAddress: privyUser.wallet.address,
-                    recipientAddress: formData.walletAddress,
-                    amount: formData.amount,
-                    payrollName: formData.payrollName,
-                    paymentId: data?.id,
-                    network: isTestnetChain(activeChain.chainId) ? 'testnet' : 'mainnet',
-                    tokenSymbol: tokenConfig.superToken.symbol,
-                    transactionHash: txData.transactionHash,
-                    isTestnet: isTestnetChain(activeChain.chainId)
-                });
             }
 
             // Show success dialog
@@ -495,21 +410,6 @@ const CreatePayrollPage = () => {
         } catch (error) {
             console.error('Error creating payroll:', error);
 
-            // Track instant payment failure
-            if (privyUser?.wallet?.address) {
-                trackInstantPaymentFailed({
-                    distinct_id: privyUser?.id || "",
-                    walletAddress: privyUser.wallet.address,
-                    recipientAddress: formData.walletAddress,
-                    amount: formData.amount,
-                    payrollName: formData.payrollName,
-                    network: isTestnetChain(activeChain.chainId) ? 'testnet' : 'mainnet',
-                    tokenSymbol: tokenConfig.superToken.symbol,
-                    isTestnet: isTestnetChain(activeChain.chainId),
-                    error: "Failed to create instant payment record or cancelled tx"
-                });
-            }
-
             toast({
                 title: "Payroll Failed",
                 description: "Failed to create payroll. Please try again.",
@@ -534,26 +434,6 @@ const CreatePayrollPage = () => {
     };
 
     const handleSubmitStream = async () => {
-        initMixpanel();
-
-        identifyUser(privyUser?.id || "", privyUser?.email?.address || "", privyUser?.wallet?.address || "");
-        // Track stream creation start
-
-        if (privyUser?.wallet?.address) {
-            trackStreamCreationStart({
-                distinct_id: privyUser?.id || "",
-                walletAddress: privyUser.wallet.address,
-                recipientAddress: formData.walletAddress,
-                amount: formData.amount,
-                flowRate: calculateFlowRate(formData.amount, formData.flowRateUnit),
-                payrollName: formData.payrollName,
-                network: isTestnetChain(activeChain.chainId) ? 'testnet' : 'mainnet',
-                tokenSymbol: tokenConfig.superToken.symbol,
-                startDate: new Date().toISOString(),
-                endDate: formData.endDateTime,
-                isTestnet: isTestnetChain(activeChain.chainId)
-            });
-        }
 
         try {
             const txData = await createSuperfluidStreamAsync({
@@ -564,23 +444,6 @@ const CreatePayrollPage = () => {
             });
 
             if (!txData?.transactionHash) {
-                // Track stream creation failure
-                if (privyUser?.wallet?.address) {
-                    trackStreamCreationFailed({
-                        distinct_id: privyUser?.id || "",
-                        walletAddress: privyUser.wallet.address,
-                        recipientAddress: formData.walletAddress,
-                        amount: formData.amount,
-                        flowRate: calculateFlowRate(formData.amount, formData.flowRateUnit),
-                        payrollName: formData.payrollName,
-                        network: isTestnetChain(activeChain.chainId) ? 'testnet' : 'mainnet',
-                        tokenSymbol: tokenConfig.superToken.symbol,
-                        startDate: new Date().toISOString(),
-                        endDate: formData.endDateTime,
-                        isTestnet: isTestnetChain(activeChain.chainId),
-                        error: "Failed to create stream"
-                    });
-                }
                 setFormData({
                     sendWalletAddress: '',
                     payrollName: `Payroll ${new Date().toLocaleDateString()}`,
@@ -622,47 +485,12 @@ const CreatePayrollPage = () => {
             });
 
             if (!data) {
-                // Track stream creation failure
-                if (privyUser?.wallet?.address) {
-                    trackStreamCreationFailed({
-                        distinct_id: privyUser.wallet.address,
-                        walletAddress: privyUser.wallet.address,
-                        recipientAddress: formData.walletAddress,
-                        amount: formData.amount,
-                        flowRate: calculateFlowRate(formData.amount, formData.flowRateUnit),
-                        payrollName: formData.payrollName,
-                        network: isTestnetChain(activeChain.chainId) ? 'testnet' : 'mainnet',
-                        tokenSymbol: tokenConfig.superToken.symbol,
-                        startDate: new Date().toISOString(),
-                        endDate: formData.endDateTime,
-                        isTestnet: isTestnetChain(activeChain.chainId),
-                        error: "Storing stream in database failed"
-                    });
-                }
                 toast({
                     title: "Failed to create stream",
                     description: "Please try again. If the problem persists, please contact support.",
                     variant: "destructive"
                 });
                 return;
-            }
-
-            // Track stream creation success
-            if (privyUser?.wallet?.address) {
-                trackStreamCreationSuccess({
-                    distinct_id: privyUser.wallet.address,
-                    walletAddress: privyUser.wallet.address,
-                    recipientAddress: formData.walletAddress,
-                    amount: formData.amount,
-                    flowRate: calculateFlowRate(formData.amount, formData.flowRateUnit),
-                    payrollName: formData.payrollName,
-                    streamId: data?.id,
-                    network: isTestnetChain(activeChain.chainId) ? 'testnet' : 'mainnet',
-                    tokenSymbol: tokenConfig.superToken.symbol,
-                    startDate: new Date().toISOString(),
-                    endDate: formData.endDateTime,
-                    isTestnet: isTestnetChain(activeChain.chainId)
-                });
             }
 
             // Show success dialog
@@ -692,24 +520,6 @@ const CreatePayrollPage = () => {
             }, 1000); // Reduced delay since dialog handles its own timing
         } catch (error) {
             console.error('Error creating payroll:', error);
-
-            // Track stream creation failure
-            if (privyUser?.wallet?.address) {
-                trackStreamCreationFailed({
-                    distinct_id: privyUser.wallet.address,
-                    walletAddress: privyUser.wallet.address,
-                    recipientAddress: formData.walletAddress,
-                    amount: formData.amount,
-                    flowRate: calculateFlowRate(formData.amount, formData.flowRateUnit),
-                    payrollName: formData.payrollName,
-                    network: isTestnetChain(activeChain.chainId) ? 'testnet' : 'mainnet',
-                    tokenSymbol: tokenConfig.superToken.symbol,
-                    startDate: new Date().toISOString(),
-                    endDate: formData.endDateTime,
-                    isTestnet: isTestnetChain(activeChain.chainId),
-                    error: "Failed to create stream or cancelled tx"
-                });
-            }
 
             toast({
                 title: "Payroll Failed",

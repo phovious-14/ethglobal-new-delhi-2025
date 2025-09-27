@@ -1,4 +1,5 @@
 import { createStream } from "@/src/api/routers/stream";
+import { CreateStreamProps } from "@/src/types/streamTypes";
 import { useMutation } from "@tanstack/react-query";
 
 const createStreamFunction = async (stream: {

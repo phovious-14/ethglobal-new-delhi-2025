@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import {
   ThemeProvider as NextThemesProvider,
 } from "next-themes";
-import { LoadingProvider } from "../../../app/context/LoadingContext";
+import { LoadingProvider } from "@/src/app/context/LoadingContext";
 
 export function ThemeProvider({ children, ...props }: { children: React.ReactNode, [key: string]: any }) {
   // Add client-side only rendering guard

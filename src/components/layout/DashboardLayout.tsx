@@ -42,8 +42,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { useDistribution } from "../../app/context/DistributionContext";
 import { AuthButton } from "./AuthButton";
-import PricingModal from "../PricingModal";
-import TerminologiesModal from "../TerminologiesModal";
 import { ChainSelector } from "../ChainSelector";
 
 interface DashboardLayoutProps {
@@ -317,17 +315,6 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                     </div>
                 </div>
             </div>
-            {/* Pricing Modal */}
-            <PricingModal
-                isOpen={isPricingModalOpen}
-                onClose={() => setIsPricingModalOpen(false)}
-            />
-
-            {/* Terminologies Modal */}
-            <TerminologiesModal
-                isOpen={isTerminologiesModalOpen}
-                onClose={() => setIsTerminologiesModalOpen(false)}
-            />
 
         </div>
     );

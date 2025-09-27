@@ -9,6 +9,7 @@ import { ethers } from 'ethers';
 import { env } from '@/src/env.mjs';
 import { useToast } from '@/src/hooks/use-toast';
 import { validateAddress } from "@/src/utils/validateAddress";
+import { validateAmount } from "@/src/utils/validateAmount";
 import { stopStream } from "@/src/api/routers/stream";
 import { useCallback } from 'react';
 import { invalidateStreamQueries } from '@/src/utils/queryInvalidation';

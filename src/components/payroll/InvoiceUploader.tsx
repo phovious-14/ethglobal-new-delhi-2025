@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Button } from '@/src/components/ui/button';
 import { Upload, CheckCircle, FileText } from 'lucide-react';
 import { usePrivy } from '@privy-io/react-auth';
-import { getTokenConfig } from '@/src/utils/tokenRegistry';
+import { getTokenConfig } from '@/src/utils/tokenConfig';
 import { useChain } from '@/src/app/context/ChainContext';
 
 interface InvoiceData {
