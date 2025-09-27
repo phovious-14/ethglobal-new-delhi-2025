@@ -218,7 +218,7 @@ const NetworkShowcase = () => {
       case 'USDT':
         return '/img/usdt.png';
       case 'DAI':
-        return '/img/dai.png'; 
+        return '/img/dai.png';
       case 'ETH':
         return '/img/eth.png';
       case 'USDCx':
@@ -226,7 +226,7 @@ const NetworkShowcase = () => {
       case 'USDTx':
         return '/img/usdtx.png';
       case 'DAIx':
-        return '/img/daix.png'; 
+        return '/img/daix.png';
       case 'ETH':
         return '/img/eth.png';
       default:
@@ -418,7 +418,7 @@ export default function Home() {
 
               <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold leading-tight">
                 <span className="bg-gradient-to-r from-white via-blue-100 to-purple-100 bg-clip-text text-transparent mr-5">
-                  Stablecoin Payroll
+                  PYUSD Payroll
                 </span>
                 <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
                   & Invoicing
@@ -426,11 +426,11 @@ export default function Home() {
               </h1>
 
               <h2 className="text-xl sm:text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
-                The most secure multi-chain stablecoin payroll platform for Web3 teams and DAOs. Make instant stablecoin payments or stream crypto payroll with real-time flows.
+                Pay employees and contractors with PYUSD, PayPal’s USD‑pegged stablecoin. Run instant or streamed payroll across EVM chains with low fees, on‑chain transparency, and easy off‑ramps.
               </h2>
             </Reveal>
 
-            
+
           </div>
         </div>
       </section>
