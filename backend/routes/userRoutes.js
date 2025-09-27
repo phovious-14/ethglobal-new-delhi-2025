@@ -19,6 +19,9 @@ router.get("/get-recepients/:privyId", authMiddleware, UserController.getRecepie
 // Get user profile by privyId
 router.get("/privy/:privyId", authMiddleware, UserController.getUserByPrivyId);
 
+// Verify user by walletAddress
+router.post("/verify-user", authMiddleware, UserController.verifyUser);
+
 // Update user profile
 // router.put("/:userId", authMiddleware, UserController.updateUser);
 

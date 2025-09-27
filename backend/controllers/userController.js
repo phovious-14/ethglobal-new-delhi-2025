@@ -115,3 +115,14 @@ export const getRecepients = async (req, res) => {
     res.status(500).json({ error: "Failed to get recepients" });
   }
 };
+
+export const verifyUser = async (req, res) => {
+  try {
+    const { walletAddress } = req.body;
+    await User.findOneAndUpdate({ walletAddress }, { isVerified: true }, { new: true });
+    res.status(200);
+  } catch (error) {
+    console.error("Error verifying user:", error);
+    res.status(500).json({ error: "Failed to verify user" });
+  }
+};

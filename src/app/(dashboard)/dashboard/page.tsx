@@ -647,25 +647,6 @@ export default function DashboardPage() {
                             </CardContent>
                         </Card>
 
-                        {/* Network Uptime */}
-                        <Card className="bg-white/60 backdrop-blur-xl border border-white/40 shadow-2xl hover:shadow-3xl rounded-3xl transition-all duration-500 cursor-pointer group transform hover:scale-105 hover:bg-white/80">
-                            <CardContent className="p-3 sm:p-6">
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <p className="text-xs sm:text-sm font-semibold text-gray-600 group-hover:text-purple-600 transition-colors duration-300">Network Uptime</p>
-                                        <p className="text-3xl sm:text-4xl font-black text-gray-900 group-hover:text-purple-700 transition-colors duration-300 tracking-tight py-2 sm:py-3">{systemMetrics.networkUptime}%</p>
-                                        <div className="flex items-center gap-1 mt-1 sm:mt-2">
-                                            <Shield className="w-3 h-3 sm:w-4 sm:h-4 text-green-600" />
-                                            <span className="text-xs sm:text-sm text-green-600 font-medium">Chain</span>
-                                        </div>
-                                    </div>
-                                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                                        <img src={activeChain.chainId === 534352 || activeChain.chainId === 534351 ? "/img/scroll.png" : "/img/base.png"} alt="Scroll" className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl" />
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-
                         {/* Success Rate */}
                         <Card className="bg-white/60 backdrop-blur-xl border border-white/40 shadow-2xl hover:shadow-3xl rounded-3xl transition-all duration-500 cursor-pointer group transform hover:scale-105 hover:bg-white/80">
                             <CardContent className="p-3 sm:p-6">

@@ -26,6 +26,9 @@ const client = z.object({
     NEXT_PUBLIC_PINATA_JWT: z.string().min(1),
     NEXT_PUBLIC_PINATA_GATEWAY_TOKEN: z.string().min(1),
     NEXT_PUBLIC_MIXPANEL_TOKEN: z.string().optional(),
+    NEXT_PUBLIC_SELF_APP_NAME: z.string(),
+    NEXT_PUBLIC_SELF_SCOPE: z.string(),
+    NEXT_PUBLIC_SELF_ENDPOINT: z.string(),
 });
 
 /**
@@ -41,6 +44,10 @@ const processEnv = {
     NEXT_PUBLIC_NETWORK: process.env.NEXT_PUBLIC_NETWORK,
     NETWORK: process.env.NETWORK,
     NEXT_PUBLIC_CHAIN_ID: process.env.NEXT_PUBLIC_CHAIN_ID,
+
+    NEXT_PUBLIC_SELF_APP_NAME: process.env.NEXT_PUBLIC_SELF_APP_NAME,
+    NEXT_PUBLIC_SELF_SCOPE: process.env.NEXT_PUBLIC_SELF_SCOPE,
+    NEXT_PUBLIC_SELF_ENDPOINT: process.env.NEXT_PUBLIC_SELF_ENDPOINT,
 
     // Legacy support
     NEXT_PUBLIC_SUPERTOKEN: process.env.NEXT_PUBLIC_SUPERTOKEN,

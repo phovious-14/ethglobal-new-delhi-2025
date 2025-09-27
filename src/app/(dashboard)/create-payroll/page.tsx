@@ -26,6 +26,8 @@ import { parseTokenAmount, isTestnetChain } from '@/src/utils/tokenRegistry';
 import { useToken } from '@/src/app/context/TokenContext';
 import { env } from '@/src/env.mjs';
 import { useStream, useBufferAmount } from '@/src/hooks/use-stream';
+import SelfQR from '@/src/components/SelfQR';
+import { useUser } from '@/src/hooks/use-user';
 
 interface PayrollFormData {
     payrollName: string;
@@ -68,6 +70,8 @@ const CreatePayrollPage = () => {
     const [pendingInvoice, setPendingInvoice] = useState<InvoiceData | null>(null);
     const [currentInvoiceNumber, setCurrentInvoiceNumber] = useState<string>('');
 
+    const [isSelfQROpen, setIsSelfQROpen] = useState(false);
+
     const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false);
     const [successDialogData, setSuccessDialogData] = useState<{
         type: 'instant' | 'stream';
@@ -83,6 +87,11 @@ const CreatePayrollPage = () => {
     const { toast } = useToast();
 
     const { ready, user: privyUser, getAccessToken } = usePrivy();
+
+    const { user, isLoading } = useUser({
+        userId: privyUser?.id,
+        accessToken,
+    });
 
     const { createInstantAsync, createSuperfluidInstantAsync } = useInstant();
     const { createStreamAsync, createSuperfluidStreamAsync } = useStream();
@@ -328,13 +337,6 @@ const CreatePayrollPage = () => {
                 });
                 return;
             }
-
-            console.log('txData', txData);
-            console.log('invoiceNumber', invoiceNumber);
-            console.log('formData', formData);
-            console.log('documentUrl', documentUrl);
-            console.log('privyUser?.wallet?.address', privyUser?.wallet?.address);
-            console.log('env.NEXT_PUBLIC_TOKEN_SYMBOL', env.NEXT_PUBLIC_TOKEN_SYMBOL);
 
             // Final validation to ensure all required fields are present
             if (!invoiceNumber || !txData.transactionHash || !formData.payrollName ||
@@ -637,6 +639,9 @@ const CreatePayrollPage = () => {
         <div className="bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-100/50 p-2 sm:p-3">
             <div className="max-w-6xl mx-auto">
                 {/* Compact Header */}
+
+                <SelfQR open={isSelfQROpen} onOpenChange={setIsSelfQROpen} handleSubmit={handleSubmit} accessToken={accessToken} />
+
                 <div className="text-center mb-3 sm:mb-4">
                     <div className="inline-flex items-center gap-1.5 sm:gap-2 bg-white/70 backdrop-blur-xl border border-white/60 rounded-xl px-3 py-1.5 sm:px-4 sm:py-2 shadow-lg">
                         <div className="w-5 h-5 sm:w-6 sm:h-6 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
@@ -834,7 +839,15 @@ const CreatePayrollPage = () => {
                                 {/* Send Button - Compact */}
                                 <div className="border-t border-slate-200/60 pt-2.5 sm:pt-3">
                                     <Button
-                                        onClick={handleSubmit}
+                                        onClick={() => {
+                                            console.log("user?.isVerified", user);
+                                            if (!user?.isVerified) {
+                                                setIsSelfQROpen(true);
+                                                return;
+                                            } else {
+                                                handleSubmit();
+                                            }
+                                        }}
                                         disabled={!canSubmit || isSubmitting}
                                         className="w-full h-11 sm:h-12 rounded-xl bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 hover:from-blue-700 hover:via-purple-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-bold relative group"
                                     >

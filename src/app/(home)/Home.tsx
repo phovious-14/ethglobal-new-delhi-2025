@@ -410,12 +410,9 @@ export default function Home() {
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
           <div className="text-center space-y-8">
+            
             {/* Main Hero Content */}
             <Reveal className="space-y-6" yOffset={18}>
-              <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20 rounded-full text-blue-400 text-sm font-medium backdrop-blur-sm">
-                Not like traditional payrolls
-              </div>
-
               <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold leading-tight">
                 <span className="bg-gradient-to-r from-white via-blue-100 to-purple-100 bg-clip-text text-transparent mr-5">
                   PYUSD Payroll

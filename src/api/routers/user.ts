@@ -114,3 +114,18 @@ export const getRecipients = async (privyId: string, accessToken: string) => {
     throw error;
   }
 }
+
+export const verifyUser = async (walletAddress: string, accessToken: string) => {
+  try {
+    const response = await axios.post(`${baseUrl}/api/users/verify-user`, { walletAddress }, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error verifying user:", error);
+    throw error;
+  }
+}
