@@ -12,7 +12,7 @@ const createStreamFunction = async (stream: {
     accessToken: string;
     streamStartTxHash: string;
     flowRateUnit: string;
-    tokenSymbol: "USDCx" | "USDTx" | "ETHx" | "DAIx" | "PYUSDx";
+    tokenSymbol: "PYUSDx";
     chainId: string;
 }) => {
     const response = await createStream(stream);
@@ -32,7 +32,7 @@ export const useCreateStream = () => {
             accessToken: string;
             streamStartTxHash: string;
             flowRateUnit: string;
-            tokenSymbol: "USDCx" | "USDTx" | "ETHx" | "DAIx" | "PYUSDx";
+            tokenSymbol: "PYUSDx";
             chainId: string;
         }) => createStreamFunction(stream),
         onSuccess: (data) => {

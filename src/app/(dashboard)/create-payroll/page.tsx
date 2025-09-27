@@ -409,7 +409,7 @@ const CreatePayrollPage = () => {
                 accessToken: accessToken,
                 invoiceNumber: invoiceNumber,
                 documentUrl: documentUrl,
-                tokenSymbol: tokenConfig.superToken.symbol as "USDCx" | "USDTx" | "ETHx" | "DAIx" | "PYUSDx",
+                tokenSymbol: tokenConfig.superToken.symbol as "PYUSDx",
             });
 
             if (!data) {
@@ -617,7 +617,7 @@ const CreatePayrollPage = () => {
                 accessToken: accessToken,
                 streamStartTxHash: txData.transactionHash,
                 flowRateUnit: formData.flowRateUnit,
-                tokenSymbol: tokenConfig.superToken.symbol as "USDCx" | "USDTx" | "ETHx" | "DAIx" | "PYUSDx",
+                tokenSymbol: tokenConfig.superToken.symbol as "PYUSDx",
                 chainId: activeChain.chainId.toString(),
             });
 

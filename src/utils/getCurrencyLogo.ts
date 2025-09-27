@@ -3,18 +3,8 @@ import { getTokenConfig } from "./tokenRegistry";
 
 // Token logo mapping
 const TOKEN_LOGOS: Record<string, string> = {
-    // Super tokens
-    'USDCx': '/img/usdcx.png',
-    'USDTx': '/img/usdtx.png',
-    // 'USDQx': '/img/usdqx.png',
-    'ETHx': '/img/eth.png',
-    'DAIx': '/img/daix.png',
-    // Native tokens
-    'USDC': '/img/usdc.png',
-    'USDT': '/img/usdt.png',
-    // 'USDQ': '/img/usdq.png',
-    'ETH': '/img/eth.png',
-    'DAI': '/img/dai.png'
+    'PYUSD': '/img/pyusd.png',
+    'PYUSDx': '/img/pyusdx.png',
 };
 
 export const getCurrencyLogo = (symbol?: string) => {

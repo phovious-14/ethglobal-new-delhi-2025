@@ -23,7 +23,7 @@ interface Instant {
     accessToken: string;
     documentUrl: string;
     invoiceNumber: string;
-    tokenSymbol: "USDCx" | "USDTx" | "ETHx" | "DAIx" | "PYUSDx";
+    tokenSymbol: "PYUSDx";
 }
 
 interface SuperfluidTransferParams {

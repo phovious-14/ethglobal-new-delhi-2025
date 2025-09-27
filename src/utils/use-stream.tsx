@@ -25,7 +25,7 @@ interface Stream {
     accessToken: string;
     streamStartTxHash: string;
     flowRateUnit: string;
-    tokenSymbol: "USDCx" | "USDTx" | "ETHx" | "DAIx" | "PYUSDx";
+    tokenSymbol: "PYUSDx";
     chainId: string;
 }
 

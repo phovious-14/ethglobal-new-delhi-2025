@@ -14,7 +14,7 @@ export const createInstant = async (instant: {
     txHash: string;
     documentUrl: string;
     invoiceNumber: string;
-    tokenSymbol: "USDCx" | "USDTx" | "ETHx" | "DAIx" | "PYUSDx";
+    tokenSymbol: "PYUSDx";
 }) => {
     const url = `${baseUrl}/api/instant/create`;
     try {
