@@ -56,29 +56,14 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const pathname = usePathname();
     const { isInstantDistribution, setIsInstantDistribution, isSenderMode, setIsSenderMode } = useDistribution();
-    const [isPricingModalOpen, setIsPricingModalOpen] = useState(false);
-    const [isTerminologiesModalOpen, setIsTerminologiesModalOpen] = useState(false);
-    const [isSelfVerifyModalOpen, setIsSelfVerifyModalOpen] = useState(false);
-    const [accessToken, setAccessToken] = useState<string>("");
     const navigationItems = [
         { id: "dashboard", label: "Dashboard", icon: Home, href: "/dashboard" },
         { id: "create-payroll", label: "Create Payroll", icon: Plus, href: "/create-payroll" },
         { id: "payroll", label: "Payrolls", icon: Users, href: "/payroll" },
-        // { id: "transfer", label: "Transfer", icon: Send, href: "/transfer" },
+        { id: "transfer", label: "Transfer", icon: Send, href: "/transfer" },
     ];
 
-    const { getAccessToken, user: privyUser, ready } = usePrivy()
-    const { user, isLoading } = useUser({
-        userId: privyUser?.id,
-        accessToken,
-    });
-
-    const getUserAccessToken = useCallback(async () => {
-        const userAccessToken = await getAccessToken();
-        if (userAccessToken) {
-            setAccessToken(userAccessToken);
-        }
-    }, [getAccessToken]);
+    const { user: privyUser, ready } = usePrivy()
 
     // Function to check if a navigation item is active
     const isActiveTab = (href: string) => {
@@ -92,12 +77,6 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     useEffect(() => {
         setMobileMenuOpen(false);
     }, [pathname]);
-
-    useEffect(() => {
-        if (privyUser && ready) {
-            getUserAccessToken();
-        }
-    }, [privyUser, ready, getUserAccessToken]);
 
     return (
         <div className="flex min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50/30">
@@ -184,40 +163,6 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                         </button> */}
                     </nav>
                 </div>
-
-                {/* Self Verify Section */}
-                {!user?.isVerified && (
-                    <div className="p-4 border-t border-white/20 mt-auto">
-                        <div className="space-y-3">
-                            {/* Self Verify Button */}
-                            <button
-                                onClick={() => setIsSelfVerifyModalOpen(true)}
-                                className={`w-full flex items-center ${sidebarCollapsed ? 'justify-center px-2' : 'space-x-3 px-4'
-                                    } py-3 rounded-xl text-sm font-medium transition-all duration-300 group bg-gradient-to-r from-emerald-500/10 to-teal-500/10 hover:from-emerald-500/20 hover:to-teal-500/20 text-emerald-700 border border-emerald-300/30 hover:border-emerald-400/50 shadow-lg shadow-emerald-500/10 hover:shadow-xl hover:shadow-emerald-500/20 hover:scale-105`}
-                                title={sidebarCollapsed ? "Self Verify Identity" : undefined}
-                            >
-                                <div className={`${sidebarCollapsed ? 'p-2' : 'p-1.5'
-                                    } rounded-lg transition-all duration-300 bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg group-hover:shadow-xl group-hover:scale-110`}>
-                                    <img src="/img/self.png" alt="self-verify" className="w-4 h-4" />
-                                </div>
-                                {!sidebarCollapsed && (
-                                    <div className="flex items-center space-x-2">
-                                        <span className="font-semibold">Self Verify</span>
-                                        <div className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs rounded-full font-medium">
-                                            Identity
-                                        </div>
-                                    </div>
-                                )}
-                            </button>
-                        </div>
-
-                        <SelfQR
-                            open={isSelfVerifyModalOpen}
-                            onOpenChange={setIsSelfVerifyModalOpen}
-                            accessToken={accessToken}
-                        />
-                    </div>
-                )}
             </div>
 
             {/* Main Content */}

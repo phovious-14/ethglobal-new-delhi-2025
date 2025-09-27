@@ -7,17 +7,19 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/src/components/ui/dialog';
+import { Shield, Copy, ExternalLink, CheckCircle, AlertCircle, RefreshCw } from 'lucide-react';
 import { useSelfVerify } from '@/src/hooks/use-self-verify';
+
 import {
     SelfQRcodeWrapper,
     SelfAppBuilder,
     type SelfApp,
+    countries,
     getUniversalLink,
 } from "@selfxyz/qrcode";
 import { env } from '../env.mjs';
 import { useToast } from '../hooks/use-toast';
 import { useQueryClient } from '@tanstack/react-query';
-import { usePrivy } from '@privy-io/react-auth';
 
 type SelfQRProps = {
     open: boolean;
@@ -34,49 +36,75 @@ export default function SelfQR({ open, onOpenChange, title = 'Your QR', handleSu
     const [linkCopied, setLinkCopied] = useState(false);
     const [selfApp, setSelfApp] = useState<SelfApp | null>(null);
     const [universalLink, setUniversalLink] = useState("");
-    const { user: privyUser } = usePrivy();
-    const userId = useMemo(() => privyUser?.id, [privyUser?.id]);
+    const [isInitializing, setIsInitializing] = useState(true);
+    const [initError, setInitError] = useState<string | null>(null);
+    const [retryTick, setRetryTick] = useState(0);
+    const [userId] = useState("0x36dCB6173777a17CE1E0910EC0D6F31a64b6b9c7");
     // Use useMemo to cache the array to avoid creating a new array on each render
-    const excludedCountries = useMemo(() => [], []);
+    const excludedCountries = useMemo(() => [countries.UNITED_STATES], []);
 
     // Use useEffect to ensure code only executes on the client side
     useEffect(() => {
+        let cancelled = false;
+        setIsInitializing(true);
+        setInitError(null);
+
+        const appName = env.NEXT_PUBLIC_SELF_APP_NAME;
+        const scope = env.NEXT_PUBLIC_SELF_SCOPE;
+        const endpoint = env.NEXT_PUBLIC_SELF_ENDPOINT?.toLowerCase();
+
+        // Basic validation
+        if (!appName || !scope || !endpoint) {
+            setInitError("Missing Self configuration. Please check environment variables.");
+            setIsInitializing(false);
+            return () => { cancelled = true; };
+        }
+
+        const timeoutId = window.setTimeout(() => {
+            if (!cancelled) {
+                setInitError("QR initialization timed out. Please try again.");
+                setIsInitializing(false);
+            }
+        }, 10000);
+
         try {
             const app = new SelfAppBuilder({
                 version: 2,
-                appName: env.NEXT_PUBLIC_SELF_APP_NAME || "PayPulse",
-                scope: env.NEXT_PUBLIC_SELF_SCOPE || "self-workshop",
-                endpoint: `${env.NEXT_PUBLIC_SELF_ENDPOINT?.toLowerCase()}`,
-                logoBase64:
-                    "https://res.cloudinary.com/dm6aa7jlg/image/upload/v1758968759/paypulse_nztrst.png", // url of a png image, base64 is accepted but not recommended
+                appName: appName || "PayPulse",
+                scope: scope || "self-workshop",
+                endpoint: endpoint,
+                logoBase64: "https://res.cloudinary.com/dm6aa7jlg/image/upload/v1758968759/paypulse_nztrst.png",
                 userId: userId,
                 endpointType: "staging_celo",
-                userIdType: "hex", // use 'hex' for ethereum address or 'uuid' for uuidv4
+                userIdType: "hex",
                 userDefinedData: "PYUSD payroll & invoice",
                 disclosures: {
-                    // what you want to verify from users' identity
                     minimumAge: 18,
-                    // ofac: true,
                     excludedCountries: excludedCountries,
-                    // what you want users to reveal
-                    // name: false,
-                    // issuing_state: true,
-                    // nationality: true,
-                    // date_of_birth: true,
-                    // passport_number: false,
-                    // gender: true,
-                    // expiry_date: false,
                 }
             }).build();
 
-            console.log("app", app);
-
+            if (cancelled) return;
             setSelfApp(app);
-            setUniversalLink(getUniversalLink(app));
+            const link = getUniversalLink(app);
+            if (!link) {
+                setInitError("Failed to create universal link.");
+            } else {
+                setUniversalLink(link);
+            }
         } catch (error) {
             console.error("Failed to initialize Self app:", error);
+            if (!cancelled) setInitError("Failed to initialize Self app. Check network and configuration.");
+        } finally {
+            if (!cancelled) setIsInitializing(false);
+            window.clearTimeout(timeoutId);
         }
-    }, [excludedCountries, userId]);
+
+        return () => {
+            cancelled = true;
+            window.clearTimeout(timeoutId);
+        };
+    }, [excludedCountries, userId, retryTick]);
 
     const copyToClipboard = () => {
         if (!universalLink) return;
@@ -107,16 +135,30 @@ export default function SelfQR({ open, onOpenChange, title = 'Your QR', handleSu
         });
     };
 
+    const retryInitialization = () => {
+        setSelfApp(null);
+        setUniversalLink("");
+        setInitError(null);
+        setIsInitializing(true);
+        setRetryTick((n) => n + 1);
+    };
+
     const handleSuccessfulVerification = async () => {
         try {
             selfVerify(accessToken || "")
-            setTimeout(() => queryClient.refetchQueries({ queryKey: ["user", userId, accessToken] }), 1000);
+            queryClient.invalidateQueries({ queryKey: ["user", userId, accessToken] });
             toast({
                 title: "Verification successful",
+                description: "Your identity has been verified successfully!"
             });
             onOpenChange(false);
         } catch (error) {
             console.error("Error verifying user:", error);
+            toast({
+                title: "Verification failed",
+                description: "There was an error processing your verification.",
+                variant: "destructive"
+            });
             onOpenChange(false);
             return
         }
@@ -133,7 +175,7 @@ export default function SelfQR({ open, onOpenChange, title = 'Your QR', handleSu
                             <img src="/img/self.png" alt="self-verify" className="w-6 h-6" />
                         </div>
                         <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-emerald-700 to-teal-600 bg-clip-text text-transparent">
-                            {title}
+                            Identity Verification
                         </DialogTitle>
                     </div>
                     <p className="text-gray-600 text-sm">
@@ -145,14 +187,37 @@ export default function SelfQR({ open, onOpenChange, title = 'Your QR', handleSu
                     {/* QR Code Section */}
                     <div className="flex justify-center">
                         <div className="relative">
-                            {selfApp ? (
+                            {initError ? (
+                                <div className="w-[280px] min-h-[280px] bg-red-50 border-2 border-red-200 rounded-2xl p-6 flex flex-col items-center justify-center text-center shadow-xl">
+                                    <AlertCircle className="w-12 h-12 text-red-500 mb-4" />
+                                    <p className="text-red-600 text-sm mb-4 font-medium">{initError}</p>
+                                    <div className="flex gap-3">
+                                        <button
+                                            type="button"
+                                            onClick={retryInitialization}
+                                            className="flex items-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-lg text-sm hover:bg-red-500 transition-colors shadow-md"
+                                        >
+                                            <RefreshCw className="w-4 h-4" />
+                                            <span>Retry</span>
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => onOpenChange(false)}
+                                            className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg text-sm hover:bg-gray-300 transition-colors"
+                                        >
+                                            Close
+                                        </button>
+                                    </div>
+                                </div>
+                            ) : selfApp ? (
                                 <div className="p-4 bg-white rounded-2xl shadow-xl border border-emerald-100">
                                     <SelfQRcodeWrapper
                                         selfApp={selfApp}
                                         onSuccess={handleSuccessfulVerification}
                                         onError={() => {
                                             toast({
-                                                title: "Error: Failed to verify identity",
+                                                title: "Verification failed",
+                                                description: "Failed to verify identity. Please try again.",
                                                 variant: "destructive"
                                             });
                                             onOpenChange(false);
@@ -163,7 +228,7 @@ export default function SelfQR({ open, onOpenChange, title = 'Your QR', handleSu
                                 <div className="w-[280px] h-[280px] bg-gradient-to-br from-gray-100 to-gray-200 animate-pulse flex items-center justify-center rounded-2xl shadow-xl border border-gray-200">
                                     <div className="text-center space-y-3">
                                         <div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
-                                        <p className="text-gray-500 text-sm font-medium">Generating QR Code...</p>
+                                        <p className="text-gray-500 text-sm font-medium">{isInitializing ? "Generating QR Code..." : "Preparing..."}</p>
                                     </div>
                                 </div>
                             )}
@@ -182,10 +247,17 @@ export default function SelfQR({ open, onOpenChange, title = 'Your QR', handleSu
                             disabled={!universalLink}
                             className="flex-1 flex items-center justify-center space-x-2 bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 disabled:from-gray-400 disabled:to-gray-500 text-white px-4 py-3 rounded-xl font-medium transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 disabled:cursor-not-allowed disabled:transform-none"
                         >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                            </svg>
-                            <span>{linkCopied ? "Copied!" : "Copy Link"}</span>
+                            {linkCopied ? (
+                                <>
+                                    <CheckCircle className="w-4 h-4" />
+                                    <span>Copied!</span>
+                                </>
+                            ) : (
+                                <>
+                                    <Copy className="w-4 h-4" />
+                                    <span>Copy Link</span>
+                                </>
+                            )}
                         </button>
 
                         <button
@@ -194,9 +266,7 @@ export default function SelfQR({ open, onOpenChange, title = 'Your QR', handleSu
                             disabled={!universalLink}
                             className="flex-1 flex items-center justify-center space-x-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 disabled:from-emerald-300 disabled:to-teal-300 text-white px-4 py-3 rounded-xl font-medium transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 disabled:cursor-not-allowed disabled:transform-none"
                         >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                            </svg>
+                            <ExternalLink className="w-4 h-4" />
                             <span>Open Self App</span>
                         </button>
                     </div>
