@@ -411,7 +411,7 @@ export default function PayrollPage() {
                                         onDownloadInvoice={handleDownloadInvoice}
                                         onCopy={copyToClipboard}
                                         onViewTx={(txHash) => {
-                                            window.open(`https://${env.NEXT_PUBLIC_NETWORK === 'TESTNET' ? 'sepolia.' : ''}scrollscan.com/tx/${txHash}`, '_blank');
+                                            window.open(`https://${env.NEXT_PUBLIC_NETWORK === 'TESTNET' ? 'sepolia.' : ''}etherscan.io/tx/${txHash}`, '_blank');
                                         }}
                                     />
                                 ) : (
@@ -422,7 +422,7 @@ export default function PayrollPage() {
                                         onDownloadInvoice={handleDownloadInvoice}
                                         onCopy={copyToClipboard}
                                         onViewTx={(txHash) => {
-                                            window.open(`https://${env.NEXT_PUBLIC_NETWORK === 'TESTNET' ? 'sepolia.' : ''}scrollscan.com/tx/${txHash}`, '_blank');
+                                            window.open(`https://${env.NEXT_PUBLIC_NETWORK === 'TESTNET' ? 'sepolia.' : ''}etherscan.io/tx/${txHash}`, '_blank');
                                         }}
                                     />
                                 )

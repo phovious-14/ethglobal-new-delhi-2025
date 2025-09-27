@@ -375,7 +375,7 @@ export async function getTransactionStatus(txHash: string, provider: ethers.prov
             status: receipt ? (receipt.status === 1 ? 'success' : 'failed') : 'pending',
             blockNumber: receipt?.blockNumber,
             gasUsed: receipt?.gasUsed?.toString(),
-            explorerUrl: `https://sepolia.scrollscan.com/tx/${txHash}`
+            explorerUrl: `https://sepolia.etherscan.io/tx/${txHash}`
         };
     } catch (error) {
         return {

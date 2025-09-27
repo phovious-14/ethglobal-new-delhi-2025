@@ -86,22 +86,14 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                     <Link href="/" className={`flex items-center group cursor-pointer ${sidebarCollapsed ? 'justify-center' : 'space-x-3'}`}>
                         <div className="relative">
                             <Image
-                                src="/img/drippay.png"
-                                alt="drippay"
-                                width={32}
+                                src="/img/paypulse.png"
+                                alt="paypulse"
+                                width={64}
                                 height={32}
-                                className="rounded-lg w-8 h-8 flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
+                                className="rounded-lg w-20 h-8 flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
                             />
                             <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-green-500/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         </div>
-                        {!sidebarCollapsed && (
-                            <div className="min-w-0">
-                                <div className="text-xl font-display font-black tracking-tighter text-black uppercase">
-                                    <span className="bg-black text-white px-3 py-1 rounded-lg shadow-lg">Drip</span>
-                                    <span className="text-black ml-1">Pay</span>
-                                </div>
-                            </div>
-                        )}
                     </Link>
                 </div>
 
@@ -167,26 +159,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                             {!sidebarCollapsed && <span>Terminologies</span>}
                         </button> */}
                     </nav>
-                </div>
-
-                {/* Bottom Section */}
-                <div className="absolute bottom-0 left-0 w-full p-4 border-t border-white/40">
-                    <div className="flex items-center justify-center flex-col gap-y-2">
-                        <Link
-                            href="https://x.com/_DripPay"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="group"
-                            title="Follow us on X"
-                        >
-                            <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center hover:bg-gray-800 transition-all duration-300 group-hover:scale-110 shadow-lg">
-                                <svg className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                                </svg>
-                            </div>
-                        </Link>
-                    </div>
-                </div>
+                </div>                
             </div>
 
             {/* Main Content */}

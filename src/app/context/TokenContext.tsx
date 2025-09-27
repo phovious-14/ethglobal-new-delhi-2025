@@ -60,7 +60,7 @@ export const TokenProvider: React.FC<{ children: ReactNode }> = ({ children }) =
             setSelectedToken(symbol);
             // Store user preference in localStorage per chain
             try {
-                localStorage.setItem(`drippay-selected-token-${activeChain.chainId}`, symbol);
+                localStorage.setItem(`selected-token-${activeChain.chainId}`, symbol);
             } catch (error) {
                 console.warn('Failed to save token preference:', error);
             }

@@ -14,12 +14,6 @@ import { usePrivy } from '@privy-io/react-auth';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@radix-ui/react-tooltip';
 import { useQueryClient } from '@tanstack/react-query';
 import { invalidateStreamQueries } from '@/src/utils/queryInvalidation';
-import {
-    trackStreamStop,
-    trackInvoiceGenerated
-} from '@/src/utils/analytics/StreamPaymentAnalytics';
-import { initMixpanel } from '@/src/lib/mixpanelClient';
-import { identifyUser } from '@/src/utils/analytics/IdentifyMixpanelUser';
 import { useChain } from '@/src/app/context/ChainContext';
 
 interface StreamVisualizerProps {
@@ -115,12 +109,12 @@ export const StreamVisualizer: React.FC<StreamVisualizerProps> = ({
                 <Document>
                     <Page size="A4" style={styles.page}>
                         {/* Watermark */}
-                        <Text style={styles.watermark}>DRIPPAY</Text>
+                        <Text style={styles.watermark}>PAYPULSE</Text>
 
                         {/* Enhanced Header */}
                         <View style={styles.header}>
                             <View>
-                                <Image src="/img/drippay.png" style={styles.logo} />
+                                <Image src="/img/paypulse.png" style={styles.logo} />
                             </View>
                             <View style={styles.invoiceInfo}>
                                 <Text style={styles.invoiceTitle}>Payroll Invoice</Text>
@@ -221,10 +215,6 @@ export const StreamVisualizer: React.FC<StreamVisualizerProps> = ({
     // Handle stopping the stream
     const handleStopStream = async () => {
         try {
-
-            initMixpanel();
-
-            identifyUser(user?.id || "", user?.email?.address || "", user?.wallet?.address || "");
             const res = await stopSuperfluidStreamAsync({
                 recipientAddress: receiver.address,
                 amount: amount,
@@ -277,36 +267,6 @@ export const StreamVisualizer: React.FC<StreamVisualizerProps> = ({
                 setLocalEndDate(stopTime);
                 setLocalIsCompleted(true);
 
-                // Track stream stop event
-                if (user?.wallet?.address) {
-                    trackStreamStop({
-                        distinct_id: user?.id || "",
-                        walletAddress: user.wallet.address,
-                        recipientAddress: receiver.address,
-                        streamId: id,
-                        totalAmountSent: payrollData.displayCalculation.toString(),
-                        duration: calculateDuration(),
-                        stopReason: 'manual',
-                        invoiceGenerated: true,
-                        network: isTestnetChain(activeChain.chainId) ? 'testnet' : 'mainnet',
-                        tokenSymbol: tokenConfig.superToken.symbol
-                    });
-
-                    // Track invoice generation
-                    trackInvoiceGenerated({
-                        distinct_id: user?.id || "",
-                        walletAddress: user.wallet.address,
-                        recipientAddress: receiver.address,
-                        streamId: id,
-                        totalAmountSent: payrollData.displayCalculation.toString(),
-                        duration: calculateDuration(),
-                        stopReason: 'manual',
-                        invoiceGenerated: true,
-                        network: isTestnetChain(activeChain.chainId) ? 'testnet' : 'mainnet',
-                        tokenSymbol: tokenConfig.superToken.symbol
-                    });
-                }
-
                 // Simply invalidate queries and let React Query handle the refresh
                 // The parent component will automatically re-render with fresh data
 
@@ -320,22 +280,6 @@ export const StreamVisualizer: React.FC<StreamVisualizerProps> = ({
             }
         } catch (error) {
             console.error('Error stopping stream:', error);
-
-            // Track stream stop failure
-            if (user?.wallet?.address) {
-                trackStreamStop({
-                    distinct_id: user?.id || "",
-                    walletAddress: user.wallet.address,
-                    recipientAddress: receiver.address,
-                    streamId: id,
-                    totalAmountSent: calculateStreamAmountSimple(amount, startDate, new Date(), activeChain.chainId).toString(),
-                    duration: calculateDuration(),
-                    stopReason: 'error',
-                    invoiceGenerated: false,
-                    network: isTestnetChain(activeChain.chainId) ? 'testnet' : 'mainnet',
-                    tokenSymbol: tokenConfig.superToken.symbol
-                });
-            }
 
             toast({
                 title: "Failed to Stop Stream",

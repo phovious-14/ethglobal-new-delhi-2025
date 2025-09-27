@@ -67,64 +67,17 @@ const Layout = ({ children, className, promptLogin }: LayoutProps) => {
               <Link href="/" className={`flex items-center group space-x-2 sm:space-x-3`}>
                 <div className="relative">
                   <Image
-                    src="/img/drippay.png"
-                    alt="DripPay"
-                    width={32}
+                    src="/img/paypulse.png"
+                    alt="PayPulse"
+                    width={64}
                     height={32}
-                    className="rounded-lg w-8 h-8 sm:w-10 sm:h-10 flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
+                    className="rounded-lg w-16 h-8 sm:w-24 sm:h-10 flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-gradient-to-r from-blue-500/30 to-purple-500/30 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </div>
-                <div className="min-w-0">
-                  <div className="text-lg sm:text-2xl font-black tracking-tight">
-                    <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">Drip</span>
-                    <span className="text-white ml-1">Pay</span>
-                  </div>
-                </div>
               </Link>
 
-              {/* Enhanced Desktop Navigation */}
-              <div className="hidden md:flex items-center space-x-2">
-
-                <Link
-                  href="/"
-                  className={`px-4 sm:px-6 py-3 font-medium text-sm rounded-xl transition-all duration-300 text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-blue-500/20 hover:to-purple-500/20 hover:border hover:border-blue-500/30 backdrop-blur-sm`}
-                >
-                  <div className="flex items-center space-x-2">
-                    <Home className="w-4 h-4" />
-                    <span>Home</span>
-                  </div>
-                </Link>
-
-                <Link
-                  href="/blog"
-                  className={`px-4 sm:px-6 py-3 font-medium text-sm rounded-xl transition-all duration-300 text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-indigo-500/20 hover:to-purple-500/20 hover:border hover:border-indigo-500/30 backdrop-blur-sm`}
-                >
-                  <div className="flex items-center space-x-2">
-                    <Star className="w-4 h-4" />
-                    <span>Blog</span>
-                  </div>
-                </Link>
-
-                <Link
-                  href="#future"
-                  className={`px-4 sm:px-6 py-3 font-medium text-sm rounded-xl transition-all duration-300 text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-emerald-500/20 hover:to-teal-500/20 hover:border hover:border-emerald-500/30 backdrop-blur-sm`}
-                >
-                  <div className="flex items-center space-x-2">
-                    <Sparkles className="w-4 h-4" />
-                    <span>What's Next</span>
-                  </div>
-                </Link>
-
-                <Link
-                  href="#faq"
-                  className={`px-4 sm:px-6 py-3 font-medium text-sm rounded-xl transition-all duration-300 text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-blue-500/20 hover:to-purple-500/20 hover:border hover:border-blue-500/30 backdrop-blur-sm`}
-                >
-                  <div className="flex items-center space-x-2">
-                    <HelpCircle className="w-4 h-4" />
-                    <span>FAQ</span>
-                  </div>
-                </Link>
+              <div>
 
                 <div className="relative">
                   <Button
@@ -191,15 +144,15 @@ const Layout = ({ children, className, promptLogin }: LayoutProps) => {
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center space-x-3">
                   <Image
-                    src="/img/drippay.png"
-                    alt="DripPay"
-                    width={32}
+                    src="/img/paypulse.png"
+                    alt="PayPulse"
+                    width={64}
                     height={32}
                     className="rounded-lg w-8 h-8"
                   />
                   <div className="text-xl font-black">
-                    <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">Drip</span>
-                    <span className="text-white ml-1">Pay</span>
+                    <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">Pay</span>
+                    <span className="text-white ml-1">Pulse</span>
                   </div>
                 </div>
                 <button

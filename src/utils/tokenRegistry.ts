@@ -41,14 +41,14 @@ export const TOKEN_REGISTRY: Record<string, NetworkConfig> = {
                     name: 'PayPal USD',
                     decimals: 6,
                     address: '0xCaC524BcA292aaade2DF8A05cC58F0a65B1B3bB9',
-                    logo: '/img/eth.png'
+                    logo: '/img/pyusd.png'
                 },
                 superToken: {
                     symbol: 'PYUSDx',
                     name: 'PayPal USD Super Token',
                     decimals: 18,
                     address: '0xA0Ef695957413E8edE3F9669ee680de306c7a980',
-                    logo: '/img/eth.png'
+                    logo: '/img/pyusdx.png'
                 },
                 chainId: 11155111
             }

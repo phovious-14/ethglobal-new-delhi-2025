@@ -144,12 +144,12 @@ export const InvoiceUploader: React.FC<InvoiceUploaderProps> = ({
                                     <Document>
                                         <Page size="A4" style={styles.page}>
                                             {/* Watermark */}
-                                            <Text style={styles.watermark}>DRIPPAY</Text>
+                                            <Text style={styles.watermark}>PAYPULSE</Text>
 
                                             {/* Enhanced Header */}
                                             <View style={styles.header}>
                                                 <View>
-                                                    <Image src="/img/drippay.png" style={styles.logo} />
+                                                    <Image src="/img/paypulse.png" style={styles.logo} />
                                                 </View>
                                                 <View style={styles.invoiceInfo}>
                                                     <Text style={styles.invoiceTitle}>Payroll Invoice</Text>
@@ -226,7 +226,7 @@ export const InvoiceUploader: React.FC<InvoiceUploaderProps> = ({
 
                                 const newInvoice: InvoiceData = {
                                     id: Date.now().toString(),
-                                    fileName: `drippay-invoice-${enhancedInvoiceNumber}-${formData.receiverName || 'recipient'}.pdf`,
+                                    fileName: `paypulse-invoice-${enhancedInvoiceNumber}-${formData.receiverName || 'recipient'}.pdf`,
                                     amount: formData.amount || '0.00',
                                     status: 'uploaded',
                                     type: 'generated'

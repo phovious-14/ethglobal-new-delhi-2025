@@ -415,7 +415,7 @@ export const AuthButton: React.FC<AuthButtonProps> = ({ className, promptLogin }
                       <SelectValue>
                         <div className="flex items-center gap-2 sm:gap-3">
                           <img
-                            src={localTokenPair?.nativeToken?.logo || "/img/drippay.png"}
+                            src={localTokenPair?.nativeToken?.logo || "/img/paypulse.png"}
                             alt={localSelectedToken}
                             className="w-5 h-5 sm:w-6 sm:h-6 rounded-full"
                           />
@@ -456,7 +456,7 @@ export const AuthButton: React.FC<AuthButtonProps> = ({ className, promptLogin }
                   <div className="flex items-center justify-between mb-1 sm:mb-1.5">
                     <div className="flex items-center gap-1.5 sm:gap-2">
                       <img
-                        src={localTokenPair?.nativeToken?.logo || "/img/drippay.png"}
+                        src={localTokenPair?.nativeToken?.logo || "/img/paypulse.png"}
                         alt={nativeTokenSymbol}
                         className="w-4 h-4 sm:w-5 sm:h-5 rounded-full shadow-sm"
                       />
@@ -482,7 +482,7 @@ export const AuthButton: React.FC<AuthButtonProps> = ({ className, promptLogin }
                   <div className="flex items-center justify-between mb-1 sm:mb-1.5">
                     <div className="flex items-center gap-1.5 sm:gap-2">
                       <img
-                        src={localTokenPair?.superToken?.logo || "/img/drippay.png"}
+                        src={localTokenPair?.superToken?.logo || "/img/paypulse.png"}
                         alt={superTokenSymbol}
                         className="w-4 h-4 sm:w-5 sm:h-5 rounded-full shadow-sm"
                       />

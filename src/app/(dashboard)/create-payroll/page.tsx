@@ -329,10 +329,17 @@ const CreatePayrollPage = () => {
                 return;
             }
 
+            console.log('txData', txData);
+            console.log('invoiceNumber', invoiceNumber);
+            console.log('formData', formData);
+            console.log('documentUrl', documentUrl);
+            console.log('privyUser?.wallet?.address', privyUser?.wallet?.address);
+            console.log('env.NEXT_PUBLIC_TOKEN_SYMBOL', env.NEXT_PUBLIC_TOKEN_SYMBOL);
+
             // Final validation to ensure all required fields are present
             if (!invoiceNumber || !txData.transactionHash || !formData.payrollName ||
                 !privyUser?.wallet?.address || !formData.receiverName || !formData.walletAddress ||
-                !formData.amount || !env.NEXT_PUBLIC_TOKEN_SYMBOL || !documentUrl) {
+                !formData.amount || !documentUrl) {
                 toast({
                     title: "Missing Required Data",
                     description: "Some required data is missing. Please try again.",
