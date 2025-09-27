@@ -1,13 +1,13 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
-import { useChain } from '@/app/context/ChainContext';
+import { useChain } from '@/src/app/context/ChainContext';
 import {
     getTokenSymbols,
     getTokenPair,
     getDefaultTokenSymbol,
     TokenPair
-} from '@/utils/tokenRegistry';
+} from '@/src/utils/tokenRegistry';
 
 interface TokenContextType {
     activeSymbol: string;

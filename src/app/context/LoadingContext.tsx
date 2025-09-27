@@ -1,6 +1,6 @@
 "use client";
 
-import { LoaderOverlay } from "@/components/LoaderOverlay/LoaderOverlay";
+import { LoaderOverlay } from "@/src/components/LoaderOverlay/LoaderOverlay";
 import {
   createContext,
   ReactNode,

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/src/components/ui/button";
 import { LogIn, User, LogOut, Settings, Wallet, Coins, Copy, Check, ChevronDown, ChevronUp, ArrowRight, ArrowLeftRight, Info, RotateCw, Repeat } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
@@ -13,38 +13,42 @@ import {
   useWallets,
 } from "@privy-io/react-auth";
 import { Loader2 } from "lucide-react";
-import { handleLogin } from "@/app/providers/providers";
-import { useToast } from "@/components/ui/use-toast";
+import { handleLogin } from "@/src/app/providers/providers";
+import { useToast } from "@/src/components/ui/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
-import { useToken } from "@/app/context/TokenContext";
-import { WalletLoginContext } from "@/app/context/WalletLoginContext";
-import { truncateEthAddress } from "@/utils/truncateEthAddress";
+import { useUser } from "@/src/hooks/use-user";
+import { useBalances } from "@/src/hooks/use-balances";
+import { useToken } from "@/src/app/context/TokenContext";
+import { WalletLoginContext } from "@/src/app/context/WalletLoginContext";
+import { truncateEthAddress } from "@/src/utils/truncateEthAddress";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
+} from "@/src/components/ui/accordion";
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/src/components/ui/tooltip";
+import { WrapUnwrapToken } from "../WrapUnwrapUSDC";
+import { useMediaQuery } from "@/src/hooks/use-media-query";
 import {
   Drawer,
   DrawerContent,
   DrawerTrigger,
-  } from "@/components/ui/drawer";
+} from "@/src/components/ui/drawer";
 import {
   getTokenSymbols,
   getTokenPair,
   getDefaultTokenSymbol
-} from "@/utils/tokenRegistry";
-import { useChain } from "@/app/context/ChainContext";
+} from "@/src/utils/tokenRegistry";
+import { useChain } from "@/src/app/context/ChainContext";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/src/components/ui/select";
 
 interface AuthButtonProps {
   className?: string;
@@ -186,17 +190,6 @@ export const AuthButton: React.FC<AuthButtonProps> = ({ className, promptLogin }
       loginMethod,
     }) => {
 
-      initMixpanel();
-
-      identifyUser(privyUserCallBack?.id || "", privyUserCallBack?.email?.address || "", privyUserCallBack?.wallet?.address || "");
-
-      trackLoginStart({
-        distinct_id: privyUserCallBack?.id,
-        email: privyUserCallBack?.email?.address || "",
-        walletAddress: privyUserCallBack?.wallet?.address || "",
-        user: privyUserCallBack?.wallet?.walletClientType === "privy" ? "web2" : "web3",
-      });
-
       if (
         !wasAlreadyAuthenticated &&
         ready &&
@@ -208,21 +201,6 @@ export const AuthButton: React.FC<AuthButtonProps> = ({ className, promptLogin }
         logout();
         return;
       }
-
-      // Track successful login
-      trackLoginSuccess({
-        distinct_id: privyUserCallBack?.id,
-        email: privyUserCallBack?.email?.address || "",
-        walletAddress: privyUserCallBack?.wallet?.address || "",
-        user: privyUserCallBack?.wallet?.walletClientType === "privy" ? "web2" : "web3",
-      });
-
-      // Ensure user properties are set/updated on each login
-      mixpanel.people.set({
-        $email: privyUserCallBack?.email?.address || "",
-        $walletAddress: privyUserCallBack?.wallet?.address || "",
-        last_login: new Date().toUTCString(),
-      });
 
       if (privyUserCallBack.email?.address !== (user as any)?.email) {
         const userAccessToken = await getAccessToken();

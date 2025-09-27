@@ -1,4 +1,4 @@
-import { ConnectLinkedWalletDialog } from "@/components/core/ConnectButton/connect-linked-wallet-dialog";
+import { ConnectLinkedWalletDialog } from "@/src/components/core/ConnectButton/connect-linked-wallet-dialog";
 import { createContext, ReactNode, useContext, useState, Dispatch, SetStateAction } from "react";
 
 type ConnectLinkedWalletContextType = {

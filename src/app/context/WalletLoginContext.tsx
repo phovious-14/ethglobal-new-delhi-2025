@@ -1,6 +1,7 @@
 import { createContext, ReactNode, useState } from "react";
 import { scrollSepolia, scroll, base, baseSepolia } from "viem/chains";
-import { env } from "@/env.mjs";
+import { env } from "@/src/env.mjs";
+import { useUser } from "@/src/hooks/use-user";
 import { usePrivy } from "@privy-io/react-auth";
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";

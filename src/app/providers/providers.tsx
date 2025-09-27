@@ -8,11 +8,13 @@ import { DistributionProvider } from "../context/DistributionContext";
 import { TokenProvider } from "../context/TokenContext";
 import { ChainProvider } from "../context/ChainContext";
 import { scrollSepolia, scroll, base, baseSepolia, sepolia } from "viem/chains";
-import { useToast } from "@/components/ui/use-toast";
-import { env } from "@/env.mjs";
+import { useToast } from "@/src/hooks/use-toast";
+import { createUser, getUserByPrivyId } from "@/src/api/routers/user";
+import { env } from "@/src/env.mjs";
 import QueryProvider from "./queryProvider";
 import { WagmiProviderCustom } from "./wagmiProviderCustom";
 import { WalletLoginProvider } from "../context/WalletLoginContext";
+import mixpanel from "mixpanel-browser";
 
 // that runs after successful login.
 export const handleLogin = async (
@@ -41,6 +43,10 @@ export const handleLogin = async (
         privyId: user.id,
       });
       if (res) {
+        mixpanel.people.set({
+          $email: email,
+          $walletAddress: user?.wallet?.address || "",
+        });
         return true;
       }
     } else if (dbUser && dbUser.email !== email) {

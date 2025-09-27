@@ -9,6 +9,7 @@ import { Button } from "../ui/button";
 import Image from "next/image";
 import { useLogin, usePrivy } from "@privy-io/react-auth";
 import { useWallets } from "@privy-io/react-auth";
+import { useSigner } from "@/src/hooks/use-signer";
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -276,12 +277,6 @@ const Layout = ({ children, className, promptLogin }: LayoutProps) => {
       <main className={className}>
         {children}
       </main>
-
-      {/* Pricing Modal */}
-      <PricingModal
-        isOpen={isPricingModalOpen}
-        onClose={() => setIsPricingModalOpen(false)}
-      />
 
       {/* Custom CSS for shimmer animation */}
       <style jsx>{`

@@ -3,12 +3,12 @@ import {
   DialogClose,
   DialogContent,
   DialogHeader,
-} from "@/components/ui/dialog";
+} from "../../components/ui/dialog";
 // import { CollectionItemOrWrappedToken } from "@/api/routers/collectionItems";
-import { Button } from "@/components/ui/button";
+import { Button } from "../../components/ui/button";
 // import ProgressiveImg from "@/components/core/ProgressiveImg";
 import { usePrivy } from "@privy-io/react-auth";
-import { truncateEthAddress } from "@/utils/truncateEthAddress";
+import { truncateEthAddress } from "../../utils/truncateEthAddress";
 
 type ConnectLinkedWalletDialogProps = {
   isOpen: boolean;

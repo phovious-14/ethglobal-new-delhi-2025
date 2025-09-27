@@ -6,8 +6,8 @@ import {
     getAllNetworks,
     getNetworkByChainId,
     NetworkConfig
-} from '@/utils/tokenRegistry';
-import { env } from '@/env.mjs';
+} from '@/src/utils/tokenRegistry';
+import { env } from '@/src/env.mjs';
 
 interface ChainContextType {
     activeChain: NetworkConfig;

@@ -3,10 +3,10 @@ import {
   DialogClose,
   DialogContent,
   DialogHeader,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+} from "../../../components/ui/dialog";
+import { Button } from "../../../components/ui/button";
 import { usePrivy } from "@privy-io/react-auth";
-import { truncateEthAddress } from "@/utils/truncateEthAddress";
+import { truncateEthAddress } from "../../../utils/truncateEthAddress";
 
 type ConnectLinkedWalletDialogProps = {
   isOpen: boolean;
