@@ -21,6 +21,16 @@ import {
   Sparkles,
   Brain,
   ArrowRight,
+  Users,
+  Globe,
+  TrendingUp,
+  Wallet,
+  Timer,
+  CreditCard,
+  BarChart3,
+  Layers,
+  Star,
+  Waves,
 } from 'lucide-react';
 import Image from 'next/image';
 import { getMainnetNetworks } from '@/src/utils/tokenRegistry';
@@ -196,152 +206,6 @@ const USDCStreamAnimation = () => {
   );
 };
 
-// Network Showcase Component
-const NetworkShowcase = () => {
-  const allNetworks = getMainnetNetworks();
-
-  const getChainLogo = (chainId: number): string => {
-    switch (chainId) {
-      case 534352: // Scroll Mainnet
-        return '/img/scroll.png';
-      case 8453: // Base Mainnet
-        return '/img/base.png';
-      default:
-        return '/img/eth.png';
-    }
-  };
-
-  const getTokenLogo = (symbol: string): string => {
-    switch (symbol) {
-      case 'USDC':
-        return '/img/usdc.png';
-      case 'USDT':
-        return '/img/usdt.png';
-      case 'DAI':
-        return '/img/dai.png';
-      case 'ETH':
-        return '/img/eth.png';
-      case 'USDCx':
-        return '/img/usdcx.png';
-      case 'USDTx':
-        return '/img/usdtx.png';
-      case 'DAIx':
-        return '/img/daix.png';
-      case 'ETH':
-        return '/img/eth.png';
-      default:
-        return '/img/usdc.png';
-    }
-  };
-
-  return (
-    <div className="space-y-8">
-
-      {/* Networks Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {allNetworks.map((network) => (
-          <div
-            key={network.chainId}
-            className="group relative bg-gradient-to-br from-gray-800/30 to-gray-900/30 border border-gray-700/50 rounded-2xl backdrop-blur-sm p-6 hover:border-blue-500/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-blue-500/10"
-          >
-            {/* Network Header */}
-            <div className="flex items-center space-x-4 mb-6">
-              <div className="relative">
-                <Image
-                  src={getChainLogo(network.chainId)}
-                  alt={network.name}
-                  width={48}
-                  height={48}
-                  className="rounded-xl group-hover:scale-110 transition-transform duration-300"
-                />
-              </div>
-              <div className="flex-1">
-                <h4 className="text-xl font-bold text-white group-hover:text-blue-400 transition-colors duration-300">
-                  {network.name}
-                </h4>
-              </div>
-            </div>
-
-            {/* Tokens Section */}
-            <div className="space-y-4">
-              <h5 className="text-sm font-semibold text-gray-300 uppercase tracking-wide">
-                Available Tokens
-              </h5>
-              <div className="space-y-3">
-                {Object.entries(network.tokens).map(([symbol, tokenPair]) => (
-                  <div
-                    key={symbol}
-                    className="bg-gradient-to-r from-gray-800/50 to-gray-700/50 border border-gray-600/30 rounded-xl p-4 hover:border-blue-500/30 transition-all duration-300 group-hover:shadow-lg"
-                  >
-                    <div className="flex items-center justify-between">
-                      {/* Native Token */}
-                      <div className="flex items-center space-x-3">
-                        <div className="relative">
-                          <Image
-                            src={getTokenLogo(symbol)}
-                            alt={tokenPair.nativeToken.name}
-                            width={32}
-                            height={32}
-                            className="rounded-full"
-                          />
-                        </div>
-                        <div>
-                          <p className="text-sm font-semibold text-white">{symbol}</p>
-                          <p className="text-xs text-gray-400">{tokenPair.nativeToken.name}</p>
-                        </div>
-                      </div>
-
-                      {/* Arrow */}
-                      <div className="flex items-center space-x-2">
-                        <ArrowRight className="w-4 h-4 text-gray-500" />
-                        <div className="text-xs text-gray-500 font-medium">Wrap to</div>
-                      </div>
-
-                      {/* Super Token */}
-                      <div className="flex items-center space-x-3">
-                        <div className="text-right">
-                          <p className="text-sm font-semibold text-blue-400">{tokenPair.superToken.symbol}</p>
-                          <p className="text-xs text-gray-400">Super Token</p>
-                        </div>
-                        <div className="relative">
-                          <Image
-                            src={getTokenLogo(tokenPair.superToken.symbol)}
-                            alt={tokenPair.superToken.name}
-                            width={28}
-                            height={28}
-                            className="rounded-full"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Info Section */}
-      <div className="mt-8 p-6 bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20 rounded-2xl backdrop-blur-sm">
-        <div className="flex items-start space-x-4">
-          <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
-            <ArrowRight className="w-4 h-4 text-blue-400" />
-          </div>
-          <div>
-            <h4 className="text-lg font-semibold text-white mb-2">How Token Wrapping Works</h4>
-            <p className="text-gray-300 text-sm leading-relaxed">
-              Convert your native stablecoins (USDC, USDT, DAI) to their Super Token equivalents (USDCx, USDTx, DAIx)
-              to enable streaming payments. Super Tokens are required for real-time payroll flows and can be unwrapped back
-              to native stablecoins at any time.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
 export default function Home() {
 
   // Scroll state for parallax + progress
@@ -409,26 +273,223 @@ export default function Home() {
         <USDCStreamAnimation />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
-          <div className="text-center space-y-8">
-            
+          <div className="text-center space-y-12">
+
             {/* Main Hero Content */}
-            <Reveal className="space-y-6" yOffset={18}>
-              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold leading-tight">
-                <span className="bg-gradient-to-r from-white via-blue-100 to-purple-100 bg-clip-text text-transparent mr-5">
-                  PYUSD Payroll
-                </span>
-                <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
-                  & Invoicing
+            <Reveal className="space-y-8" yOffset={18}>
+
+              <h1 className="text-5xl sm:text-6xl lg:text-8xl font-bold leading-tight">
+                <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent text-4xl sm:text-5xl lg:text-6xl">
+                  Stream Salaries Every Second
                 </span>
               </h1>
 
-              <h2 className="text-xl sm:text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
-                Pay employees and contractors with PYUSD, PayPal’s USD‑pegged stablecoin. Run instant or streamed payroll across EVM chains with low fees, on‑chain transparency, and easy off‑ramps.
+              <h2 className="text-xl sm:text-2xl text-gray-300 max-w-5xl mx-auto leading-relaxed">
+                The world's first real-time payroll powered by <span className="text-blue-400 font-semibold">PYUSD</span> and <span className="text-green-400 font-semibold">Self,</span> <span className="text-purple-400 font-semibold">Superfluid</span>.
+                <br />Pay employees continuously as they work
               </h2>
             </Reveal>
+          </div>
+        </div>
+      </section>
 
+      {/* Features Section */}
+      <section className="relative py-32 bg-gradient-to-b from-transparent to-gray-900/50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+          {/* Section Header */}
+          <Reveal className="text-center mb-20">
+            <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6">
+              Why Choose <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">PayPulse</span>?
+            </h2>
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+              Revolutionary payroll features that transform how businesses pay their workforce
+            </p>
+          </Reveal>
+
+          {/* Features Grid */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+            {/* Real-time Streaming */}
+            <Reveal className="group" delayMs={100}>
+              <div className="bg-gradient-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 rounded-2xl p-8 backdrop-blur-sm hover:border-blue-500/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-blue-500/10">
+                <div className="w-12 h-12 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                  <Waves className="w-6 h-6 text-blue-400" />
+                </div>
+                <h3 className="text-xl font-bold text-white mb-4">Real-time Streaming</h3>
+                <p className="text-gray-300 leading-relaxed">
+                  Employees get paid every second they work. Watch salaries flow continuously instead of waiting for monthly paychecks.
+                </p>
+              </div>
+            </Reveal>
+
+            {/* Instant Payments */}
+            <Reveal className="group" delayMs={200}>
+              <div className="bg-gradient-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 rounded-2xl p-8 backdrop-blur-sm hover:border-purple-500/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-purple-500/10">
+                <div className="w-12 h-12 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                  <Zap className="w-6 h-6 text-purple-400" />
+                </div>
+                <h3 className="text-xl font-bold text-white mb-4">Instant Settlements</h3>
+                <p className="text-gray-300 leading-relaxed">
+                  One-click payments for bonuses, contractors, and project completions. Instant, transparent, and cost-effective.
+                </p>
+              </div>
+            </Reveal>
+
+            {/* PYUSD Integration */}
+            <Reveal className="group" delayMs={300}>
+              <div className="bg-gradient-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 rounded-2xl p-8 backdrop-blur-sm hover:border-green-500/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-green-500/10">
+                <div className="w-12 h-12 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                  <DollarSign className="w-6 h-6 text-green-400" />
+                </div>
+                <h3 className="text-xl font-bold text-white mb-4">PYUSD Powered</h3>
+                <p className="text-gray-300 leading-relaxed">
+                  Built on PayPal's USD stablecoin with easy off-ramps to traditional banking. Stable, regulated, and trusted.
+                </p>
+              </div>
+            </Reveal>
+
+            {/* Global Reach */}
+            <Reveal className="group" delayMs={400}>
+              <div className="bg-gradient-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 rounded-2xl p-8 backdrop-blur-sm hover:border-cyan-500/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/10">
+                <div className="w-12 h-12 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                  <Globe className="w-6 h-6 text-cyan-400" />
+                </div>
+                <h3 className="text-xl font-bold text-white mb-4">Global Workforce</h3>
+                <p className="text-gray-300 leading-relaxed">
+                  Pay anyone, anywhere, instantly. No banks, no borders, no delays. Perfect for remote teams and international contractors.
+                </p>
+              </div>
+            </Reveal>
+
+            {/* Automated Invoicing */}
+            <Reveal className="group" delayMs={500}>
+              <div className="bg-gradient-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 rounded-2xl p-8 backdrop-blur-sm hover:border-orange-500/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-orange-500/10">
+                <div className="w-12 h-12 bg-gradient-to-r from-orange-500/20 to-red-500/20 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                  <CreditCard className="w-6 h-6 text-orange-400" />
+                </div>
+                <h3 className="text-xl font-bold text-white mb-4">Smart Invoicing</h3>
+                <p className="text-gray-300 leading-relaxed">
+                  Automatic invoice generation, PDF exports, and payment tracking. Streamline your accounting and compliance.
+                </p>
+              </div>
+            </Reveal>
+
+            {/* Transparent Analytics */}
+            <Reveal className="group" delayMs={600}>
+              <div className="bg-gradient-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 rounded-2xl p-8 backdrop-blur-sm hover:border-pink-500/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-pink-500/10">
+                <div className="w-12 h-12 bg-gradient-to-r from-pink-500/20 to-purple-500/20 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                  <TrendingUp className="w-6 h-6 text-pink-400" />
+                </div>
+                <h3 className="text-xl font-bold text-white mb-4">Real-time Analytics</h3>
+                <p className="text-gray-300 leading-relaxed">
+                  Complete transparency with on-chain records, flow visualizations, and comprehensive payroll analytics.
+                </p>
+              </div>
+            </Reveal>
 
           </div>
+        </div>
+      </section>
+
+      {/* How It Works Section */}
+      <section className="relative py-32">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+          <Reveal className="text-center mb-20">
+            <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6">
+              How It <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">Works</span>
+            </h2>
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+              Three simple steps to revolutionize your payroll
+            </p>
+          </Reveal>
+
+          <div className="grid md:grid-cols-3 gap-12">
+
+            {/* Step 1 */}
+            <Reveal className="text-center" delayMs={100}>
+              <div className="relative">
+                <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-blue-500/25">
+                  <Wallet className="w-10 h-10 text-white" />
+                </div>
+                <div className="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                  1
+                </div>
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-4">Connect & Setup</h3>
+              <p className="text-gray-300 leading-relaxed">
+                Connect your wallet, add employee addresses, and configure payment preferences. Setup takes less than 5 minutes.
+              </p>
+            </Reveal>
+
+            {/* Step 2 */}
+            <Reveal className="text-center" delayMs={200}>
+              <div className="relative">
+                <div className="w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-purple-500/25">
+                  <Timer className="w-10 h-10 text-white" />
+                </div>
+                <div className="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                  2
+                </div>
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-4">Start Streaming</h3>
+              <p className="text-gray-300 leading-relaxed">
+                Launch salary streams or send instant payments. Watch money flow in real-time with beautiful visualizations.
+              </p>
+            </Reveal>
+
+            {/* Step 3 */}
+            <Reveal className="text-center" delayMs={300}>
+              <div className="relative">
+                <div className="w-20 h-20 bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-green-500/25">
+                  <CheckCircle className="w-10 h-10 text-white" />
+                </div>
+                <div className="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                  3
+                </div>
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-4">Track & Manage</h3>
+              <p className="text-gray-300 leading-relaxed">
+                Monitor all payments, generate invoices, and access comprehensive analytics. Full transparency and control.
+              </p>
+            </Reveal>
+
+          </div>
+        </div>
+      </section>
+
+      {/* Demo CTA Section */}
+      <section className="relative py-32 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-cyan-500/10 border-y border-gray-700/50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+
+          <Reveal>
+            <div className="space-y-8">
+              <h2 className="text-4xl sm:text-5xl font-bold text-white">
+                Ready to Experience the Future of Payroll?
+              </h2>
+              <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+                Join the revolution. Start streaming salaries today and give your employees the financial freedom they deserve.
+              </p>
+
+              {/* Trust Indicators */}
+              <div className="flex flex-wrap justify-center items-center gap-8 pt-12 opacity-60">
+                <div className="flex items-center space-x-2">
+                  <Shield className="w-5 h-5 text-green-400" />
+                  <span className="text-sm text-gray-400">Secure & Audited</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Star className="w-5 h-5 text-yellow-400" />
+                  <span className="text-sm text-gray-400">ETHGlobal Winner</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Layers className="w-5 h-5 text-blue-400" />
+                  <span className="text-sm text-gray-400">Multi-chain Ready</span>
+                </div>
+              </div>
+            </div>
+          </Reveal>
+
         </div>
       </section>
     </div>

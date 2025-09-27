@@ -13,6 +13,7 @@ import { useToast } from '@/src/hooks/use-toast';
 import { useQueryClient } from '@tanstack/react-query';
 import { isAddress } from 'ethers/lib/utils';
 import { invalidateUserQueries } from '@/src/utils/queryInvalidation';
+import { useEns } from '@/src/hooks/use-ens';
 
 interface RecipientSelectorProps {
     formData: {
@@ -20,12 +21,14 @@ interface RecipientSelectorProps {
         walletAddress: string;
     };
     onFormDataChange: (field: 'receiverName' | 'walletAddress', value: string) => void;
+    onResolvedAddressChange?: (resolvedAddress: string | null) => void;
     accessToken: string;
 }
 
 export const RecipientSelector: React.FC<RecipientSelectorProps> = ({
     formData,
     onFormDataChange,
+    onResolvedAddressChange,
     accessToken
 }) => {
     const { toast } = useToast();
@@ -37,6 +40,20 @@ export const RecipientSelector: React.FC<RecipientSelectorProps> = ({
     const [newlyAddedRecipient, setNewlyAddedRecipient] = useState<{ name: string, address: string } | null>(null);
     const [walletAddressError, setWalletAddressError] = useState<string>('');
     const [isDuplicateWallet, setIsDuplicateWallet] = useState<boolean>(false);
+
+    // ENS resolution
+    const {
+        resolvedAddress,
+        isValidEns,
+        isValidAddress,
+        isLoading: ensLoading,
+        error: ensError,
+        isEnsName,
+        ensName
+    } = useEns({
+        input: formData.walletAddress,
+        enabled: !!formData.walletAddress
+    });
 
     const {
         addRecipientAsync,
@@ -56,7 +73,22 @@ export const RecipientSelector: React.FC<RecipientSelectorProps> = ({
         }));
     }, [recipients]);
 
-    // Check for duplicate wallet addresses
+    // Notify parent component of resolved address changes
+    useEffect(() => {
+        if (onResolvedAddressChange) {
+            onResolvedAddressChange(resolvedAddress);
+        }
+    }, [resolvedAddress, onResolvedAddressChange]);
+
+    // Auto-populate recipient name with ENS name when resolved
+    useEffect(() => {
+        if (ensName && resolvedAddress && !formData.receiverName) {
+            // Only auto-populate if the name field is empty
+            onFormDataChange('receiverName', ensName);
+        }
+    }, [ensName, resolvedAddress, formData.receiverName, onFormDataChange]);
+
+    // Check for duplicate wallet addresses (using resolved address for ENS)
     const checkDuplicateWallet = (address: string): boolean => {
         if (!address || !availableRecipients.length) return false;
         const normalizedAddress = address.toLowerCase();
@@ -80,7 +112,7 @@ export const RecipientSelector: React.FC<RecipientSelectorProps> = ({
         }
     }, [availableRecipients, newlyAddedRecipient]);
 
-    // Validate wallet address
+    // Validate wallet address with ENS support
     const validateWalletAddress = (address: string): boolean => {
         if (!address) {
             setWalletAddressError('');
@@ -88,14 +120,34 @@ export const RecipientSelector: React.FC<RecipientSelectorProps> = ({
             return false;
         }
 
-        if (!isAddress(address)) {
-            setWalletAddressError('Please enter a valid Ethereum wallet address');
+        // Use ENS error if available
+        if (ensError) {
+            setWalletAddressError(ensError);
             setIsDuplicateWallet(false);
             return false;
         }
 
-        // Check for duplicate wallet
-        const isDuplicate = checkDuplicateWallet(address);
+        // For ENS names, check if we have a resolved address
+        if (isEnsName) {
+            if (ensLoading) {
+                setWalletAddressError('');
+                setIsDuplicateWallet(false);
+                return false; // Still loading
+            }
+            if (!resolvedAddress) {
+                setWalletAddressError('ENS name could not be resolved');
+                setIsDuplicateWallet(false);
+                return false;
+            }
+        } else if (!isAddress(address)) {
+            setWalletAddressError('Please enter a valid Ethereum wallet address or ENS name');
+            setIsDuplicateWallet(false);
+            return false;
+        }
+
+        // Check for duplicate wallet using resolved address
+        const addressToCheck = resolvedAddress || address;
+        const isDuplicate = checkDuplicateWallet(addressToCheck);
         setIsDuplicateWallet(isDuplicate);
         if (isDuplicate) {
             setWalletAddressError('This wallet address is already in your recipients list');
@@ -115,8 +167,11 @@ export const RecipientSelector: React.FC<RecipientSelectorProps> = ({
             return;
         }
 
+        // Use resolved address for saving (ENS names get converted to addresses)
+        const finalAddress = resolvedAddress || formData.walletAddress;
+
         // Double-check for duplicates before saving
-        if (checkDuplicateWallet(formData.walletAddress)) {
+        if (checkDuplicateWallet(finalAddress)) {
             toast({
                 title: "Duplicate wallet address",
                 description: "This wallet address is already in your recipients list.",
@@ -128,7 +183,7 @@ export const RecipientSelector: React.FC<RecipientSelectorProps> = ({
         try {
             const response = await addRecipientAsync({
                 privyId: privyUser?.id || '',
-                recipientAddress: formData.walletAddress,
+                recipientAddress: finalAddress, // Use resolved address
                 recipientName: formData.receiverName,
                 accessToken: accessToken || ''
             });
@@ -144,7 +199,7 @@ export const RecipientSelector: React.FC<RecipientSelectorProps> = ({
                 // Track the newly added recipient for auto-selection
                 setNewlyAddedRecipient({
                     name: formData.receiverName,
-                    address: formData.walletAddress
+                    address: finalAddress // Use resolved address
                 });
 
                 // Clear form data after successful addition
@@ -265,35 +320,50 @@ export const RecipientSelector: React.FC<RecipientSelectorProps> = ({
                 {recipientMode === 'create' && (
                     <div className="space-y-3">
                         <div className="grid grid-cols-1 gap-2">
-                            <div>
-                                <Label htmlFor="receiverName" className="text-xs font-medium text-gray-700 mb-1 block">
-                                    Full Name
-                                </Label>
-                                <Input
-                                    id="receiverName"
-                                    value={formData.receiverName}
-                                    onChange={(e) => onFormDataChange('receiverName', e.target.value)}
-                                    placeholder="Enter recipient's full name"
-                                    className="h-9 rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500/20 transition-all duration-300 text-sm"
-                                />
-                            </div>
+                            {/* Wallet Address Field - Now First */}
                             <div>
                                 <Label htmlFor="walletAddress" className="text-xs font-medium text-gray-700 mb-1 block">
-                                    Wallet Address
+                                    Wallet Address or ENS
                                 </Label>
-                                <Input
-                                    id="walletAddress"
-                                    value={formData.walletAddress}
-                                    onChange={(e) => {
-                                        onFormDataChange('walletAddress', e.target.value);
-                                        validateWalletAddress(e.target.value);
-                                    }}
-                                    placeholder="0x..."
-                                    className={`h-9 rounded-lg transition-all duration-300 text-sm ${walletAddressError
-                                        ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20'
-                                        : 'border-gray-200 focus:border-blue-500 focus:ring-blue-500/20'
-                                        }`}
-                                />
+                                <div className="relative">
+                                    <Input
+                                        id="walletAddress"
+                                        value={formData.walletAddress}
+                                        onChange={(e) => {
+                                            onFormDataChange('walletAddress', e.target.value);
+                                            validateWalletAddress(e.target.value);
+                                        }}
+                                        placeholder="0x... or name.eth"
+                                        className={`h-9 rounded-lg transition-all duration-300 text-sm pr-8 ${walletAddressError
+                                            ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20'
+                                            : ensLoading
+                                                ? 'border-yellow-300 focus:border-yellow-500 focus:ring-yellow-500/20'
+                                                : resolvedAddress && isEnsName
+                                                    ? 'border-green-300 focus:border-green-500 focus:ring-green-500/20'
+                                                    : 'border-gray-200 focus:border-blue-500 focus:ring-blue-500/20'
+                                            }`}
+                                    />
+                                    {/* Loading indicator for ENS resolution */}
+                                    {ensLoading && (
+                                        <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
+                                            <div className="w-4 h-4 border-2 border-yellow-500 border-t-transparent rounded-full animate-spin"></div>
+                                        </div>
+                                    )}
+                                    {/* Success indicator for resolved ENS */}
+                                    {resolvedAddress && isEnsName && !ensLoading && (
+                                        <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
+                                            <div className="w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
+                                                <span className="text-white text-xs">✓</span>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                                {/* Show resolved address for ENS names */}
+                                {resolvedAddress && isEnsName && !ensLoading && !walletAddressError && (
+                                    <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
+                                        {resolvedAddress}
+                                    </p>
+                                )}
                                 {walletAddressError && (
                                     <p className="text-xs text-red-600 mt-1 flex items-center gap-1">
                                         <span className="w-1 h-1 bg-red-600 rounded-full"></span>
@@ -306,6 +376,23 @@ export const RecipientSelector: React.FC<RecipientSelectorProps> = ({
                                         This wallet is already in your recipients list. Switch to "Existing" to select it.
                                     </p>
                                 )}
+                            </div>
+
+                            {/* Full Name Field - Now Second */}
+                            <div>
+                                <Label htmlFor="receiverName" className="text-xs font-medium text-gray-700 mb-1 block">
+                                    Full Name
+                                </Label>
+                                <Input
+                                    id="receiverName"
+                                    value={formData.receiverName}
+                                    onChange={(e) => onFormDataChange('receiverName', e.target.value)}
+                                    placeholder={ensName ? ensName : "Enter recipient's full name"}
+                                    className={`h-9 rounded-lg transition-all duration-300 text-sm ${ensName && formData.receiverName === ensName
+                                        ? 'border-green-300 focus:border-green-500 focus:ring-green-500/20 bg-green-50'
+                                        : 'border-gray-200 focus:border-blue-500 focus:ring-blue-500/20'
+                                        }`}
+                                />
                             </div>
                         </div>
 

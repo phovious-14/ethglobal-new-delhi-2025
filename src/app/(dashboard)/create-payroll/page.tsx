@@ -34,6 +34,7 @@ interface PayrollFormData {
     sendWalletAddress: string;
     receiverName: string;
     walletAddress: string;
+    resolvedWalletAddress?: string; // For ENS resolution
     amount: string;
     endDateTime: string;
     flowRateUnit: 'hour' | 'day' | 'week' | 'month';
@@ -165,6 +166,10 @@ const CreatePayrollPage = () => {
 
     const handleFormDataChange = useCallback((field: 'receiverName' | 'walletAddress', value: string) => {
         setFormData(prev => ({ ...prev, [field]: value }));
+    }, []);
+
+    const handleResolvedAddressChange = useCallback((resolvedAddress: string | null) => {
+        setFormData(prev => ({ ...prev, resolvedWalletAddress: resolvedAddress || undefined }));
     }, []);
 
     const handleInvoicesChange = useCallback((newInvoices: InvoiceData[]) => {
@@ -307,8 +312,9 @@ const CreatePayrollPage = () => {
             }
 
             // Create Superfluid instant payment
+            const recipientAddress = formData.resolvedWalletAddress || formData.walletAddress;
             const txData = await createSuperfluidInstantAsync({
-                recipientAddress: formData.walletAddress,
+                recipientAddress: recipientAddress,
                 amount: formData.amount,
                 superTokenAddr: tokenConfig.superToken.address,
                 decimals: tokenConfig.superToken.decimals,
@@ -356,7 +362,7 @@ const CreatePayrollPage = () => {
                 payrollName: formData.payrollName,
                 senderWalletAddress: privyUser?.wallet?.address || '',
                 receiverName: formData.receiverName,
-                receiverWalletAddress: formData.walletAddress,
+                receiverWalletAddress: recipientAddress, // Use resolved address
                 amount: parseTokenAmount(formData.amount, tokenConfig.superToken.decimals),
                 chainId: activeChain.chainId.toString(),
                 txHash: txData.transactionHash,
@@ -445,8 +451,9 @@ const CreatePayrollPage = () => {
     const handleSubmitStream = async () => {
 
         try {
+            const recipientAddress = formData.resolvedWalletAddress || formData.walletAddress;
             const txData = await createSuperfluidStreamAsync({
-                recipientAddress: formData.walletAddress,
+                recipientAddress: recipientAddress,
                 amount: calculateFlowRate(formData.amount, formData.flowRateUnit),
                 superTokenAddr: tokenConfig.superToken.address,
                 decimals: tokenConfig.superToken.decimals,
@@ -482,7 +489,7 @@ const CreatePayrollPage = () => {
                 payrollName: formData.payrollName,
                 senderWalletAddress: privyUser?.wallet?.address || '',
                 receiverName: formData.receiverName,
-                receiverWalletAddress: formData.walletAddress,
+                receiverWalletAddress: recipientAddress, // Use resolved address
                 amount: parseTokenAmount(formData.amount, tokenConfig.superToken.decimals),
                 flowRate: calculateFlowRate(formData.amount, formData.flowRateUnit),
                 streamStartTime: new Date().toISOString(),
@@ -779,6 +786,7 @@ const CreatePayrollPage = () => {
                                         <RecipientSelector
                                             formData={formData}
                                             onFormDataChange={handleFormDataChange}
+                                            onResolvedAddressChange={handleResolvedAddressChange}
                                             accessToken={accessToken}
                                         />
                                     </div>
@@ -893,7 +901,14 @@ const CreatePayrollPage = () => {
                                                 <div>
                                                     <p className="text-xs text-purple-300 font-medium uppercase tracking-wider mb-1">Recipient</p>
                                                     <p className="text-white font-semibold text-sm sm:text-base">{formData.receiverName}</p>
-                                                    <p className="text-gray-300 text-xs font-mono break-all leading-relaxed">{formData.walletAddress}</p>
+                                                    <p className="text-gray-300 text-xs font-mono break-all leading-relaxed">
+                                                        {formData.resolvedWalletAddress || formData.walletAddress}
+                                                    </p>
+                                                    {formData.resolvedWalletAddress && formData.walletAddress !== formData.resolvedWalletAddress && (
+                                                        <p className="text-gray-400 text-xs mt-1">
+                                                            ENS: {formData.walletAddress}
+                                                        </p>
+                                                    )}
                                                 </div>
 
                                                 <div className="bg-gradient-to-r from-green-500/20 to-emerald-500/20 backdrop-blur-sm rounded-xl p-2 sm:p-2.5 lg:p-3 border border-green-500/30">

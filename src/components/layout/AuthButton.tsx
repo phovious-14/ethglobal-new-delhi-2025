@@ -49,6 +49,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/src/components/ui/select";
+import { useEnsAvatar, useEnsName, useAccount } from "wagmi";
 
 interface AuthButtonProps {
   className?: string;
@@ -61,6 +62,14 @@ export const AuthButton: React.FC<AuthButtonProps> = ({ className, promptLogin }
   const [accessToken, setAccessToken] = React.useState<string>("");
   const { toast: toastPopup } = useToast();
   const { activeChain } = useChain();
+  
+  const { address } = useAccount()
+  const { data: name } = useEnsName({ address, chainId: 1 })
+  const { data: avatar } = useEnsAvatar({ name: name || "", chainId: 1 })
+
+  console.log("avatar", avatar);
+  console.log("name", name);
+  console.log("address", address);
 
   // Wallet state
   const [copied, setCopied] = React.useState(false);
@@ -345,10 +354,10 @@ export const AuthButton: React.FC<AuthButtonProps> = ({ className, promptLogin }
     <>
       {/* Enhanced User Info Section */}
       <div className="flex items-center space-x-2 sm:space-x-3 p-2 sm:p-4 border-b border-white/40 bg-gradient-to-r from-blue-50/30 to-purple-50/30 rounded-t-2xl sm:rounded-t-3xl">
-        {privyUser?.twitter?.profilePictureUrl ? (
+        {avatar ? (
           <div className="relative w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl overflow-hidden border-2 border-white/60 shadow-xl">
             <img
-              src={privyUser?.twitter?.profilePictureUrl || "/img/twitter.png"}
+              src={avatar || "/img/twitter.png"}
               alt="Profile"
               className="w-full h-full object-cover"
             />
@@ -364,7 +373,7 @@ export const AuthButton: React.FC<AuthButtonProps> = ({ className, promptLogin }
         )}
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-base sm:text-xl font-bold text-gray-900">Connected Wallet</span>
+            <span className="text-base sm:text-xl font-bold text-gray-900">{name ? name : "Connected Wallet"}</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-sm sm:text-base text-gray-600 font-mono">{truncateEthAddress(privyUser?.wallet?.address || '')}</span>
@@ -644,10 +653,10 @@ export const AuthButton: React.FC<AuthButtonProps> = ({ className, promptLogin }
             className="wallet-button group p-[2px] rounded-2xl hover:backdrop-blur-md hover:bg-white hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer border border-white/20 hover:border-white/40"
             onClick={handleButtonClick}
           >
-            {privyUser?.twitter?.profilePictureUrl ? (
+            {avatar ? (
               <div className="relative w-10 h-10 rounded-xl overflow-hidden border-2 border-white/60 shadow-lg group-hover:shadow-xl transition-all duration-300">
                 <img
-                  src={privyUser?.twitter?.profilePictureUrl || "/img/twitter.png"}
+                  src={avatar || "/img/twitter.png"}
                   alt="Profile"
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                 />

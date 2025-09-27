@@ -7,19 +7,17 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/src/components/ui/dialog';
-import { Shield } from 'lucide-react';
 import { useSelfVerify } from '@/src/hooks/use-self-verify';
-
 import {
     SelfQRcodeWrapper,
     SelfAppBuilder,
     type SelfApp,
-    countries,
     getUniversalLink,
 } from "@selfxyz/qrcode";
 import { env } from '../env.mjs';
 import { useToast } from '../hooks/use-toast';
 import { useQueryClient } from '@tanstack/react-query';
+import { usePrivy } from '@privy-io/react-auth';
 
 type SelfQRProps = {
     open: boolean;
@@ -36,9 +34,10 @@ export default function SelfQR({ open, onOpenChange, title = 'Your QR', handleSu
     const [linkCopied, setLinkCopied] = useState(false);
     const [selfApp, setSelfApp] = useState<SelfApp | null>(null);
     const [universalLink, setUniversalLink] = useState("");
-    const [userId] = useState("0x36dCB6173777a17CE1E0910EC0D6F31a64b6b9c7");
+    const { user: privyUser } = usePrivy();
+    const userId = useMemo(() => privyUser?.id, [privyUser?.id]);
     // Use useMemo to cache the array to avoid creating a new array on each render
-    const excludedCountries = useMemo(() => [countries.UNITED_STATES], []);
+    const excludedCountries = useMemo(() => [], []);
 
     // Use useEffect to ensure code only executes on the client side
     useEffect(() => {
@@ -111,7 +110,7 @@ export default function SelfQR({ open, onOpenChange, title = 'Your QR', handleSu
     const handleSuccessfulVerification = async () => {
         try {
             selfVerify(accessToken || "")
-            queryClient.invalidateQueries({ queryKey: ["user", userId, accessToken] });
+            setTimeout(() => queryClient.refetchQueries({ queryKey: ["user", userId, accessToken] }), 1000);
             toast({
                 title: "Verification successful",
             });

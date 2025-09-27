@@ -69,15 +69,15 @@ const Layout = ({ children, className, promptLogin }: LayoutProps) => {
                   <Image
                     src="/img/paypulse.png"
                     alt="PayPulse"
-                    width={64}
+                    width={100}
                     height={32}
-                    className="rounded-lg w-16 h-8 sm:w-24 sm:h-10 flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
+                    className="rounded-lg w-16 h-8 sm:w-32 sm:h-10 flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-gradient-to-r from-blue-500/30 to-purple-500/30 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </div>
               </Link>
 
-              <div>
+              <div className="flex items-center space-x-4">
 
                 <div className="relative">
                   <Button
@@ -111,19 +111,19 @@ const Layout = ({ children, className, promptLogin }: LayoutProps) => {
                     <span>Launch App</span>
                   </Button>
                 </div>
-              </div>
 
-              {/* Enhanced Mobile Menu Button */}
-              <div className="flex items-center space-x-3">
-                <button
-                  className="md:hidden flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-r from-gray-700/50 to-gray-800/50 border border-gray-600/50 hover:border-gray-500/50 transition-all duration-300 focus:outline-none backdrop-blur-sm"
-                  aria-label="Open menu"
-                  onClick={() => setMobileMenuOpen(true)}
-                >
-                  <Menu className="w-6 h-6 text-gray-300" />
-                </button>
-                <div className="hidden sm:block">
-                  <AuthButton promptLogin={promptLogin} />
+                {/* Enhanced Mobile Menu Button */}
+                <div className="flex items-center space-x-3">
+                  <button
+                    className="md:hidden flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-r from-gray-700/50 to-gray-800/50 border border-gray-600/50 hover:border-gray-500/50 transition-all duration-300 focus:outline-none backdrop-blur-sm"
+                    aria-label="Open menu"
+                    onClick={() => setMobileMenuOpen(true)}
+                  >
+                    <Menu className="w-6 h-6 text-gray-300" />
+                  </button>
+                  <div className="hidden sm:block">
+                    <AuthButton promptLogin={promptLogin} />
+                  </div>
                 </div>
               </div>
             </div>
@@ -146,9 +146,9 @@ const Layout = ({ children, className, promptLogin }: LayoutProps) => {
                   <Image
                     src="/img/paypulse.png"
                     alt="PayPulse"
-                    width={64}
+                    width={100}
                     height={32}
-                    className="rounded-lg w-8 h-8"
+                    className="rounded-lg w-16 h-8 sm:w-32 sm:h-10 flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
                   />
                   <div className="text-xl font-black">
                     <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">Pay</span>
