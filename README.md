@@ -2,6 +2,8 @@
 
 > **Stream Salaries Every Second** - Revolutionary real-time payroll platform powered by PYUSD and Superfluid Protocol
 
+🚀 **[Live Demo](https://ethglobal-new-delhi-2025.vercel.app/)** | 📖 [Documentation](#) | 🎮 [Try Now](https://ethglobal-new-delhi-2025.vercel.app/dashboard)
+
 [![ETHGlobal New Delhi 2025](https://img.shields.io/badge/ETHGlobal-New%20Delhi%202025-blue)](https://ethglobal.com/)
 [![Built with Next.js](https://img.shields.io/badge/Built%20with-Next.js-black)](https://nextjs.org/)
 [![Powered by Superfluid](https://img.shields.io/badge/Powered%20by-Superfluid-green)](https://superfluid.finance/)
